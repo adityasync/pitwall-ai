@@ -44,6 +44,13 @@ def run(year: int, rnd: int, log) -> bool:
         )
         log.flush()
         if r.returncode != 0:
+            if script == "build_quali.py":
+                log.write(
+                    f"[{script} {year} R{rnd} FAILED rc={r.returncode} "
+                    "non-fatal; continuing]\n"
+                )
+                log.flush()
+                continue
             log.write(f"[{script} {year} R{rnd} FAILED rc={r.returncode}]\n")
             log.flush()
             ok = False
