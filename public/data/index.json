@@ -655,6 +655,27 @@
    "story": "ANT passes NOR for P1; HAM passes VER for P3"
   },
   {
+   "id": "2026-17-azerbaijan",
+   "year": 2026,
+   "round": 17,
+   "name": "Azerbaijan Grand Prix",
+   "circuit": "Baku",
+   "date": "2026-09-26",
+   "coverage": {
+    "telemetry": true,
+    "telemetryDrivers": [
+     "RUS",
+     "VER",
+     "HAD"
+    ],
+    "radio": true,
+    "weather": true,
+    "intervals": true
+   },
+   "featured": true,
+   "story": "PIA passes LEC for P2; NOR passes HAD for P4"
+  },
+  {
    "id": "2026-18-malaysia",
    "year": 2026,
    "round": 18,
