@@ -1,0 +1,6 @@
+fastf1>=3.5
+requests>=2.31
+certifi>=2024.1
+numpy>=1.26
+pandas>=2.2
+pytest>=8.0

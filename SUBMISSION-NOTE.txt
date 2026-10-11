@@ -1,0 +1,5 @@
+Problem. F1 is hard to follow live. New fans see a gap shrink or a pit stop and don't know why it matters; devoted fans need real data but engineering tools are scattered and English-only.
+
+Solution. PITWALL.AI is a second screen for a race. Tap any overtake, pit stop or gap change and get a plain explanation in English or Hinglish, with an evidence strip showing the exact numbers behind it. Easy mode teaches newcomers; Pro mode gives the full workstation: track map with braking zones, driver comparison, strategy and tyre pace. Three full replays ship: Singapore 2025, Brazil and Britain 2024. Every number is labelled measured, derived or estimate, and the AI may only quote values computed from real lap data — 20 out of 20 on our honesty eval, including trap questions it must refuse.
+
+AI tools. Z.ai (glm-4.5-flash) for explanations and chat, wrapped in number, name and comparison validators with template fallback; an AI coding agent built the app. Data: OpenF1 replay feed, since live data is paid.

@@ -1,0 +1,71 @@
+{
+ "seasons": [
+  2025,
+  2024
+ ],
+ "races": [
+  {
+   "id": "2024-12-british",
+   "year": 2024,
+   "round": 12,
+   "name": "British Grand Prix",
+   "circuit": "Silverstone",
+   "date": "2024-07-07",
+   "coverage": {
+    "telemetry": true,
+    "telemetryDrivers": [
+     "HAM",
+     "VER",
+     "NOR"
+    ],
+    "radio": true,
+    "weather": true,
+    "intervals": true
+   },
+   "featured": true,
+   "story": "SAI passes HUL for P6; VER passes NOR for P3"
+  },
+  {
+   "id": "2024-21-brazil",
+   "year": 2024,
+   "round": 21,
+   "name": "S\u00e3o Paulo Grand Prix",
+   "circuit": "Interlagos",
+   "date": "2024-11-03",
+   "coverage": {
+    "telemetry": true,
+    "telemetryDrivers": [
+     "VER",
+     "OCO",
+     "GAS"
+    ],
+    "radio": true,
+    "weather": true,
+    "intervals": true
+   },
+   "featured": true,
+   "story": "RUS passes NOR for P1; LEC passes LAW for P5"
+  },
+  {
+   "id": "2025-18-singapore",
+   "year": 2025,
+   "round": 18,
+   "name": "Singapore Grand Prix",
+   "circuit": "Singapore",
+   "date": "2025-10-05",
+   "coverage": {
+    "telemetry": true,
+    "telemetryDrivers": [
+     "RUS",
+     "VER",
+     "NOR"
+    ],
+    "radio": true,
+    "weather": true,
+    "intervals": true
+   },
+   "featured": true,
+   "story": "NOR passes ANT for P4; LEC passes HAM for P6"
+  }
+ ]
+}
