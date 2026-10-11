@@ -637,3 +637,425 @@
 [quali] wrote E:\adityap\PitWallAi\public\data\2025-15-dutch\quali.json (20 drivers)
 
 ===== 2025 round 16 =====
+[pitwall] 2025-16-italian: Italy GP @ Monza (session_key=9912)
+[fetch] drivers?session_key=9912 -> 20 rows
+[fetch] laps?session_key=9912 -> 976 rows
+[fetch] stints?session_key=9912 -> 39 rows
+[fetch] position?session_key=9912 -> 421 rows
+[fetch] pit?session_key=9912 -> 19 rows
+[fetch] intervals?session_key=9912 -> 20226 rows
+[fetch] overtakes?session_key=9912 -> 202 rows
+[fetch] race_control?session_key=9912 -> 73 rows
+[fetch] weather?session_key=9912 -> 144 rows
+[fetch] team_radio?session_key=9912 -> 32 rows
+[fetch] championship_drivers?session_key=9912 -> 21 rows
+[fetch] championship_teams?session_key=9912 -> 10 rows
+[pitwall] counts: drivers=20 laps=976 stints=39 pit=19 pos=421 iv=20226 ov=202 rc=73 wx=144 radio=32
+[pitwall] telemetry drivers: ['VER', 'NOR', 'PIA']
+[fetch] car_data?session_key=9912&driver_number=1 -> 29611 rows
+[fetch] location?session_key=9912&driver_number=1 -> 30700 rows
+[fetch] car_data?session_key=9912&driver_number=4 -> 29611 rows
+[fetch] location?session_key=9912&driver_number=4 -> 30700 rows
+[fetch] car_data?session_key=9912&driver_number=81 -> 29611 rows
+[fetch] location?session_key=9912&driver_number=81 -> 30700 rows
+[pitwall] telemetry drivers kept: ['VER', 'NOR', 'PIA']
+[fetch] location?session_key=9912&driver_number=16 -> 30700 rows
+[fetch] location?session_key=9912&driver_number=63 -> 30700 rows
+[fetch] location?session_key=9912&driver_number=44 -> 30700 rows
+[fetch] location?session_key=9912&driver_number=23 -> 30700 rows
+[fetch] location?session_key=9912&driver_number=5 -> 30700 rows
+[fetch] location?session_key=9912&driver_number=12 -> 30700 rows
+[fetch] location?session_key=9912&driver_number=6 -> 30700 rows
+[fetch] location?session_key=9912&driver_number=55 -> 30700 rows
+[fetch] location?session_key=9912&driver_number=87 -> 30700 rows
+[fetch] location?session_key=9912&driver_number=22 -> 30700 rows
+[fetch] location?session_key=9912&driver_number=30 -> 30700 rows
+[fetch] location?session_key=9912&driver_number=31 -> 30700 rows
+[fetch] location?session_key=9912&driver_number=10 -> 30700 rows
+[fetch] location?session_key=9912&driver_number=43 -> 30700 rows
+[fetch] location?session_key=9912&driver_number=18 -> 30700 rows
+[fetch] location?session_key=9912&driver_number=14 -> 30700 rows
+[fetch] location?session_key=9912&driver_number=27 -> 30700 rows
+[pitwall] map cars: 20/20
+[pitwall] wrote E:\adityap\PitWallAi\public\data\2025-16-italian (374 moments, gz=0.90MB)
+[fetch] drivers?session_key=9908 -> 20 rows
+[fetch] laps?session_key=9908 -> 315 rows
+[quali] 2025-16-italian: 315 laps
+[quali] wrote E:\adityap\PitWallAi\public\data\2025-16-italian\quali.json (20 drivers)
+
+===== 2025 round 17 =====
+[pitwall] 2025-17-azerbaijan: Azerbaijan GP @ Baku (session_key=9904)
+[fetch] drivers?session_key=9904 -> 20 rows
+[fetch] laps?session_key=9904 -> 968 rows
+[fetch] stints?session_key=9904 -> 41 rows
+[fetch] position?session_key=9904 -> 334 rows
+[fetch] pit?session_key=9904 -> 21 rows
+[fetch] intervals?session_key=9904 -> 23768 rows
+[fetch] overtakes?session_key=9904 -> 158 rows
+[fetch] race_control?session_key=9904 -> 73 rows
+[fetch] weather?session_key=9904 -> 156 rows
+[fetch] team_radio?session_key=9904 -> 21 rows
+[fetch] championship_drivers?session_key=9904 -> 21 rows
+[fetch] championship_teams?session_key=9904 -> 10 rows
+[pitwall] counts: drivers=20 laps=968 stints=41 pit=21 pos=334 iv=23768 ov=158 rc=73 wx=156 radio=21
+[pitwall] telemetry drivers: ['VER', 'RUS', 'SAI']
+[fetch] car_data?session_key=9904&driver_number=1 -> 34990 rows
+[fetch] location?session_key=9904&driver_number=1 -> 34978 rows
+[fetch] car_data?session_key=9904&driver_number=63 -> 34990 rows
+[fetch] location?session_key=9904&driver_number=63 -> 34972 rows
+[fetch] car_data?session_key=9904&driver_number=55 -> 34990 rows
+[fetch] location?session_key=9904&driver_number=55 -> 34972 rows
+[pitwall] telemetry drivers kept: ['VER', 'RUS', 'SAI']
+[fetch] location?session_key=9904&driver_number=12 -> 34978 rows
+[fetch] location?session_key=9904&driver_number=30 -> 34976 rows
+[fetch] location?session_key=9904&driver_number=22 -> 34978 rows
+[fetch] location?session_key=9904&driver_number=4 -> 34978 rows
+[fetch] location?session_key=9904&driver_number=44 -> 34972 rows
+[fetch] location?session_key=9904&driver_number=16 -> 34978 rows
+[fetch] location?session_key=9904&driver_number=6 -> 34978 rows
+[fetch] location?session_key=9904&driver_number=5 -> 34978 rows
+[fetch] location?session_key=9904&driver_number=87 -> 34972 rows
+[fetch] location?session_key=9904&driver_number=23 -> 34978 rows
+[fetch] location?session_key=9904&driver_number=31 -> 34976 rows
+[fetch] location?session_key=9904&driver_number=14 -> 34978 rows
+[fetch] location?session_key=9904&driver_number=27 -> 34978 rows
+[fetch] location?session_key=9904&driver_number=18 -> 34978 rows
+[fetch] location?session_key=9904&driver_number=10 -> 34978 rows
+[fetch] location?session_key=9904&driver_number=43 -> 34972 rows
+[fetch] location?session_key=9904&driver_number=81 -> 34972 rows
+[pitwall] map cars: 20/20
+[pitwall] wrote E:\adityap\PitWallAi\public\data\2025-17-azerbaijan (398 moments, gz=1.14MB)
+[fetch] drivers?session_key=9900 -> 20 rows
+[fetch] retry 1/4 after 2s: laps?session_key=9900
+[fetch] retry 2/4 after 4s: laps?session_key=9900
+[fetch] retry 3/4 after 6s: laps?session_key=9900
+[fetch] retry 4/4 after 8s: laps?session_key=9900
+Traceback (most recent call last):
+  File "E:\adityap\PitWallAi\pipeline\build_quali.py", line 93, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "E:\adityap\PitWallAi\pipeline\build_quali.py", line 59, in main
+    laps = fetch(f"{OPENF1}/laps?session_key={sk}", cdir / "raw_quali_laps.json")
+  File "E:\adityap\PitWallAi\pipeline\build_race.py", line 132, in fetch
+    raise RuntimeError(f"fetch failed {url}: {last}")
+RuntimeError: fetch failed https://api.openf1.org/v1/laps?session_key=9900: 404 Client Error: Not Found for url: https://api.openf1.org/v1/laps?session_key=9900
+[build_quali.py 2025 R17 FAILED rc=1]
+
+===== 2025 round 19 =====
+[pitwall] 2025-19-americas: United States GP @ Austin (session_key=9888)
+[fetch] drivers?session_key=9888 -> 20 rows
+[fetch] laps?session_key=9888 -> 1067 rows
+[fetch] stints?session_key=9888 -> 41 rows
+[fetch] position?session_key=9888 -> 387 rows
+[fetch] pit?session_key=9888 -> 21 rows
+[fetch] intervals?session_key=9888 -> 22187 rows
+[fetch] overtakes?session_key=9888 -> 186 rows
+[fetch] race_control?session_key=9888 -> 81 rows
+[fetch] weather?session_key=9888 -> 154 rows
+[fetch] team_radio?session_key=9888 -> 18 rows
+[fetch] championship_drivers?session_key=9888 -> 21 rows
+[fetch] championship_teams?session_key=9888 -> 10 rows
+[pitwall] counts: drivers=20 laps=1067 stints=41 pit=21 pos=387 iv=22187 ov=186 rc=81 wx=154 radio=18
+[pitwall] telemetry drivers: ['VER', 'NOR', 'LEC']
+[fetch] car_data?session_key=9888&driver_number=1 -> 33732 rows
+[fetch] location?session_key=9888&driver_number=1 -> 35315 rows
+[fetch] car_data?session_key=9888&driver_number=4 -> 33732 rows
+[fetch] location?session_key=9888&driver_number=4 -> 35315 rows
+[fetch] car_data?session_key=9888&driver_number=16 -> 33732 rows
+[fetch] location?session_key=9888&driver_number=16 -> 35315 rows
+[pitwall] telemetry drivers kept: ['VER', 'NOR', 'LEC']
+[fetch] location?session_key=9888&driver_number=44 -> 35315 rows
+[fetch] location?session_key=9888&driver_number=81 -> 35315 rows
+[fetch] location?session_key=9888&driver_number=63 -> 35315 rows
+[fetch] location?session_key=9888&driver_number=22 -> 35315 rows
+[fetch] location?session_key=9888&driver_number=27 -> 35315 rows
+[fetch] location?session_key=9888&driver_number=87 -> 35315 rows
+[fetch] location?session_key=9888&driver_number=14 -> 35315 rows
+[fetch] location?session_key=9888&driver_number=30 -> 35315 rows
+[fetch] location?session_key=9888&driver_number=18 -> 35315 rows
+[fetch] location?session_key=9888&driver_number=12 -> 35315 rows
+[fetch] location?session_key=9888&driver_number=23 -> 35315 rows
+[fetch] location?session_key=9888&driver_number=31 -> 35315 rows
+[fetch] location?session_key=9888&driver_number=6 -> 35315 rows
+[fetch] location?session_key=9888&driver_number=43 -> 35315 rows
+[fetch] location?session_key=9888&driver_number=5 -> 35315 rows
+[fetch] location?session_key=9888&driver_number=10 -> 35315 rows
+[fetch] location?session_key=9888&driver_number=55 -> 35315 rows
+[pitwall] map cars: 20/20
+[pitwall] wrote E:\adityap\PitWallAi\public\data\2025-19-americas (342 moments, gz=1.10MB)
+[fetch] drivers?session_key=9884 -> 20 rows
+[fetch] laps?session_key=9884 -> 285 rows
+[quali] 2025-19-americas: 285 laps
+[quali] wrote E:\adityap\PitWallAi\public\data\2025-19-americas\quali.json (19 drivers)
+
+===== 2025 round 20 =====
+[pitwall] 2025-20-mexico: Mexico GP @ Mexico City (session_key=9877)
+[fetch] drivers?session_key=9877 -> 20 rows
+[fetch] laps?session_key=9877 -> 1266 rows
+[fetch] stints?session_key=9877 -> 47 rows
+[fetch] position?session_key=9877 -> 593 rows
+[fetch] pit?session_key=9877 -> 27 rows
+[fetch] intervals?session_key=9877 -> 26147 rows
+[fetch] overtakes?session_key=9877 -> 320 rows
+[fetch] race_control?session_key=9877 -> 78 rows
+[fetch] weather?session_key=9877 -> 162 rows
+[fetch] team_radio?session_key=9877 -> 28 rows
+[fetch] championship_drivers?session_key=9877 -> 21 rows
+[fetch] championship_teams?session_key=9877 -> 10 rows
+[pitwall] counts: drivers=20 laps=1266 stints=47 pit=27 pos=593 iv=26147 ov=320 rc=78 wx=162 radio=28
+[pitwall] telemetry drivers: ['NOR', 'LEC', 'VER']
+[fetch] car_data?session_key=9877&driver_number=4 -> 35555 rows
+[fetch] location?session_key=9877&driver_number=4 -> 36340 rows
+[fetch] car_data?session_key=9877&driver_number=16 -> 35555 rows
+[fetch] location?session_key=9877&driver_number=16 -> 36340 rows
+[fetch] car_data?session_key=9877&driver_number=1 -> 35555 rows
+[fetch] location?session_key=9877&driver_number=1 -> 36340 rows
+[pitwall] telemetry drivers kept: ['NOR', 'LEC', 'VER']
+[fetch] location?session_key=9877&driver_number=87 -> 36340 rows
+[fetch] location?session_key=9877&driver_number=81 -> 36340 rows
+[fetch] location?session_key=9877&driver_number=12 -> 36340 rows
+[fetch] location?session_key=9877&driver_number=63 -> 36340 rows
+[fetch] location?session_key=9877&driver_number=44 -> 36340 rows
+[fetch] location?session_key=9877&driver_number=31 -> 36340 rows
+[fetch] location?session_key=9877&driver_number=5 -> 36340 rows
+[fetch] location?session_key=9877&driver_number=22 -> 36340 rows
+[fetch] location?session_key=9877&driver_number=23 -> 36340 rows
+[fetch] location?session_key=9877&driver_number=6 -> 36340 rows
+[fetch] location?session_key=9877&driver_number=18 -> 36340 rows
+[fetch] location?session_key=9877&driver_number=10 -> 36340 rows
+[fetch] location?session_key=9877&driver_number=43 -> 36340 rows
+[fetch] location?session_key=9877&driver_number=55 -> 36340 rows
+[fetch] location?session_key=9877&driver_number=14 -> 36340 rows
+[fetch] location?session_key=9877&driver_number=27 -> 36340 rows
+[fetch] location?session_key=9877&driver_number=30 -> 36340 rows
+[pitwall] map cars: 20/20
+[pitwall] wrote E:\adityap\PitWallAi\public\data\2025-20-mexico (543 moments, gz=1.13MB)
+[fetch] drivers?session_key=9873 -> 20 rows
+[fetch] laps?session_key=9873 -> 307 rows
+[quali] 2025-20-mexico: 307 laps
+[quali] wrote E:\adityap\PitWallAi\public\data\2025-20-mexico\quali.json (20 drivers)
+
+===== 2025 round 21 =====
+[pitwall] 2025-21-brazil: Brazil GP @ São Paulo (session_key=9869)
+[fetch] drivers?session_key=9869 -> 20 rows
+[fetch] laps?session_key=9869 -> 1252 rows
+[fetch] stints?session_key=9869 -> 57 rows
+[fetch] position?session_key=9869 -> 759 rows
+[fetch] pit?session_key=9869 -> 37 rows
+[fetch] intervals?session_key=9869 -> 24513 rows
+[fetch] overtakes?session_key=9869 -> 369 rows
+[fetch] race_control?session_key=9869 -> 58 rows
+[fetch] weather?session_key=9869 -> 152 rows
+[fetch] team_radio?session_key=9869 -> 24 rows
+[fetch] championship_drivers?session_key=9869 -> 21 rows
+[fetch] championship_teams?session_key=9869 -> 10 rows
+[pitwall] counts: drivers=20 laps=1252 stints=57 pit=37 pos=759 iv=24513 ov=369 rc=58 wx=152 radio=24
+[pitwall] telemetry drivers: ['NOR', 'ANT', 'VER']
+[fetch] car_data?session_key=9869&driver_number=4 -> 33626 rows
+[fetch] location?session_key=9869&driver_number=4 -> 34072 rows
+[fetch] car_data?session_key=9869&driver_number=12 -> 33626 rows
+[fetch] location?session_key=9869&driver_number=12 -> 34072 rows
+[fetch] car_data?session_key=9869&driver_number=1 -> 33626 rows
+[fetch] location?session_key=9869&driver_number=1 -> 34072 rows
+[pitwall] telemetry drivers kept: ['NOR', 'ANT', 'VER']
+[fetch] location?session_key=9869&driver_number=63 -> 34072 rows
+[fetch] location?session_key=9869&driver_number=81 -> 34072 rows
+[fetch] location?session_key=9869&driver_number=87 -> 34072 rows
+[fetch] location?session_key=9869&driver_number=30 -> 34072 rows
+[fetch] location?session_key=9869&driver_number=6 -> 34072 rows
+[fetch] location?session_key=9869&driver_number=27 -> 34072 rows
+[fetch] location?session_key=9869&driver_number=10 -> 34072 rows
+[fetch] location?session_key=9869&driver_number=23 -> 34072 rows
+[fetch] location?session_key=9869&driver_number=31 -> 34072 rows
+[fetch] location?session_key=9869&driver_number=55 -> 34072 rows
+[fetch] location?session_key=9869&driver_number=14 -> 34072 rows
+[fetch] location?session_key=9869&driver_number=43 -> 34072 rows
+[fetch] location?session_key=9869&driver_number=18 -> 34072 rows
+[fetch] location?session_key=9869&driver_number=22 -> 34072 rows
+[fetch] location?session_key=9869&driver_number=44 -> 34072 rows
+[fetch] location?session_key=9869&driver_number=16 -> 34072 rows
+[fetch] location?session_key=9869&driver_number=5 -> 34072 rows
+[pitwall] map cars: 20/20
+[pitwall] wrote E:\adityap\PitWallAi\public\data\2025-21-brazil (719 moments, gz=1.06MB)
+[fetch] drivers?session_key=9865 -> 20 rows
+[fetch] laps?session_key=9865 -> 316 rows
+[quali] 2025-21-brazil: 316 laps
+[quali] wrote E:\adityap\PitWallAi\public\data\2025-21-brazil\quali.json (19 drivers)
+
+===== 2025 round 22 =====
+[pitwall] 2025-22-las-vegas: United States GP @ Las Vegas (session_key=9858)
+[fetch] drivers?session_key=9858 -> 20 rows
+[fetch] laps?session_key=9858 -> 888 rows
+[fetch] stints?session_key=9858 -> 44 rows
+[fetch] position?session_key=9858 -> 329 rows
+[fetch] pit?session_key=9858 -> 23 rows
+[fetch] intervals?session_key=9858 -> 17506 rows
+[fetch] overtakes?session_key=9858 -> 158 rows
+[fetch] race_control?session_key=9858 -> 63 rows
+[fetch] weather?session_key=9858 -> 141 rows
+[fetch] team_radio?session_key=9858 -> 78 rows
+[fetch] championship_drivers?session_key=9858 -> 21 rows
+[fetch] championship_teams?session_key=9858 -> 10 rows
+[pitwall] counts: drivers=20 laps=888 stints=44 pit=23 pos=329 iv=17506 ov=158 rc=63 wx=141 radio=78
+[pitwall] telemetry drivers: ['VER', 'NOR', 'RUS']
+[fetch] car_data?session_key=9858&driver_number=1 -> 31399 rows
+[fetch] location?session_key=9858&driver_number=1 -> 32353 rows
+[fetch] car_data?session_key=9858&driver_number=4 -> 31399 rows
+[fetch] location?session_key=9858&driver_number=4 -> 32353 rows
+[fetch] car_data?session_key=9858&driver_number=63 -> 31399 rows
+[fetch] location?session_key=9858&driver_number=63 -> 32353 rows
+[pitwall] telemetry drivers kept: ['VER', 'NOR', 'RUS']
+[fetch] location?session_key=9858&driver_number=81 -> 32353 rows
+[fetch] location?session_key=9858&driver_number=12 -> 32335 rows
+[fetch] location?session_key=9858&driver_number=16 -> 32353 rows
+[fetch] location?session_key=9858&driver_number=55 -> 32353 rows
+[fetch] location?session_key=9858&driver_number=6 -> 32335 rows
+[fetch] location?session_key=9858&driver_number=27 -> 32353 rows
+[fetch] location?session_key=9858&driver_number=44 -> 32353 rows
+[fetch] location?session_key=9858&driver_number=31 -> 32353 rows
+[fetch] location?session_key=9858&driver_number=87 -> 32335 rows
+[fetch] location?session_key=9858&driver_number=14 -> 32353 rows
+[fetch] location?session_key=9858&driver_number=22 -> 32353 rows
+[fetch] location?session_key=9858&driver_number=10 -> 32353 rows
+[fetch] location?session_key=9858&driver_number=30 -> 32353 rows
+[fetch] location?session_key=9858&driver_number=43 -> 32353 rows
+[fetch] location?session_key=9858&driver_number=23 -> 32353 rows
+[fetch] location?session_key=9858&driver_number=5 -> 32335 rows
+[fetch] location?session_key=9858&driver_number=18 -> 32353 rows
+[pitwall] map cars: 20/20
+[pitwall] wrote E:\adityap\PitWallAi\public\data\2025-22-las-vegas (290 moments, gz=0.90MB)
+[fetch] drivers?session_key=9854 -> 20 rows
+[fetch] laps?session_key=9854 -> 375 rows
+[quali] 2025-22-las-vegas: 375 laps
+[quali] wrote E:\adityap\PitWallAi\public\data\2025-22-las-vegas\quali.json (20 drivers)
+
+===== 2025 round 23 =====
+[pitwall] 2025-23-qatar: Qatar GP @ Lusail (session_key=9850)
+[fetch] drivers?session_key=9850 -> 20 rows
+[fetch] laps?session_key=9850 -> 1070 rows
+[fetch] stints?session_key=9850 -> 61 rows
+[fetch] position?session_key=9850 -> 476 rows
+[fetch] pit?session_key=9850 -> 41 rows
+[fetch] intervals?session_key=9850 -> 24118 rows
+[fetch] overtakes?session_key=9850 -> 292 rows
+[fetch] race_control?session_key=9850 -> 81 rows
+[fetch] weather?session_key=9850 -> 149 rows
+[fetch] team_radio?session_key=9850 -> 30 rows
+[fetch] championship_drivers?session_key=9850 -> 21 rows
+[fetch] championship_teams?session_key=9850 -> 10 rows
+[pitwall] counts: drivers=20 laps=1070 stints=61 pit=41 pos=476 iv=24118 ov=292 rc=81 wx=149 radio=30
+[pitwall] telemetry drivers: ['VER', 'PIA', 'SAI']
+[fetch] car_data?session_key=9850&driver_number=1 -> 32144 rows
+[fetch] location?session_key=9850&driver_number=1 -> 34094 rows
+[fetch] car_data?session_key=9850&driver_number=81 -> 32144 rows
+[fetch] location?session_key=9850&driver_number=81 -> 34094 rows
+[fetch] car_data?session_key=9850&driver_number=55 -> 32144 rows
+[fetch] location?session_key=9850&driver_number=55 -> 34094 rows
+[pitwall] telemetry drivers kept: ['VER', 'PIA', 'SAI']
+[fetch] location?session_key=9850&driver_number=4 -> 34094 rows
+[fetch] location?session_key=9850&driver_number=12 -> 34094 rows
+[fetch] location?session_key=9850&driver_number=63 -> 34094 rows
+[fetch] location?session_key=9850&driver_number=14 -> 34094 rows
+[fetch] location?session_key=9850&driver_number=16 -> 34094 rows
+[fetch] location?session_key=9850&driver_number=30 -> 34094 rows
+[fetch] location?session_key=9850&driver_number=22 -> 34094 rows
+[fetch] location?session_key=9850&driver_number=23 -> 34094 rows
+[fetch] location?session_key=9850&driver_number=44 -> 34094 rows
+[fetch] location?session_key=9850&driver_number=5 -> 34094 rows
+[fetch] location?session_key=9850&driver_number=43 -> 34094 rows
+[fetch] location?session_key=9850&driver_number=31 -> 34094 rows
+[fetch] location?session_key=9850&driver_number=10 -> 34094 rows
+[fetch] location?session_key=9850&driver_number=18 -> 34094 rows
+[fetch] location?session_key=9850&driver_number=6 -> 34094 rows
+[fetch] location?session_key=9850&driver_number=87 -> 34094 rows
+[fetch] location?session_key=9850&driver_number=27 -> 34094 rows
+[pitwall] map cars: 20/20
+[pitwall] wrote E:\adityap\PitWallAi\public\data\2025-23-qatar (540 moments, gz=1.05MB)
+[fetch] drivers?session_key=9846 -> 20 rows
+[fetch] laps?session_key=9846 -> 358 rows
+[quali] 2025-23-qatar: 358 laps
+[quali] wrote E:\adityap\PitWallAi\public\data\2025-23-qatar\quali.json (20 drivers)
+
+===== 2025 round 24 =====
+[pitwall] 2025-24-abu-dhabi: United Arab Emirates GP @ Yas Island (session_key=9839)
+[fetch] drivers?session_key=9839 -> 20 rows
+[fetch] laps?session_key=9839 -> 1156 rows
+[fetch] stints?session_key=9839 -> 47 rows
+[fetch] position?session_key=9839 -> 668 rows
+[fetch] pit?session_key=9839 -> 27 rows
+[fetch] intervals?session_key=9839 -> 26261 rows
+[fetch] overtakes?session_key=9839 -> 342 rows
+[fetch] race_control?session_key=9839 -> 109 rows
+[fetch] weather?session_key=9839 -> 154 rows
+[fetch] team_radio?session_key=9839 -> 22 rows
+[fetch] championship_drivers?session_key=9839 -> 21 rows
+[fetch] championship_teams?session_key=9839 -> 10 rows
+[pitwall] counts: drivers=20 laps=1156 stints=47 pit=27 pos=668 iv=26261 ov=342 rc=109 wx=154 radio=22
+[pitwall] telemetry drivers: ['VER', 'PIA', 'NOR']
+[fetch] car_data?session_key=9839&driver_number=1 -> 33653 rows
+[fetch] location?session_key=9839&driver_number=1 -> 34452 rows
+[fetch] car_data?session_key=9839&driver_number=81 -> 33653 rows
+[fetch] location?session_key=9839&driver_number=81 -> 34452 rows
+[fetch] car_data?session_key=9839&driver_number=4 -> 33653 rows
+[fetch] location?session_key=9839&driver_number=4 -> 34452 rows
+[pitwall] telemetry drivers kept: ['VER', 'PIA', 'NOR']
+[fetch] location?session_key=9839&driver_number=16 -> 34452 rows
+[fetch] location?session_key=9839&driver_number=63 -> 34452 rows
+[fetch] location?session_key=9839&driver_number=14 -> 34452 rows
+[fetch] location?session_key=9839&driver_number=31 -> 34452 rows
+[fetch] location?session_key=9839&driver_number=44 -> 34452 rows
+[fetch] location?session_key=9839&driver_number=27 -> 34452 rows
+[fetch] location?session_key=9839&driver_number=18 -> 34452 rows
+[fetch] location?session_key=9839&driver_number=5 -> 34452 rows
+[fetch] location?session_key=9839&driver_number=87 -> 34452 rows
+[fetch] location?session_key=9839&driver_number=55 -> 34452 rows
+[fetch] location?session_key=9839&driver_number=22 -> 34452 rows
+[fetch] location?session_key=9839&driver_number=12 -> 34452 rows
+[fetch] location?session_key=9839&driver_number=23 -> 34452 rows
+[fetch] location?session_key=9839&driver_number=6 -> 34452 rows
+[fetch] location?session_key=9839&driver_number=30 -> 34452 rows
+[fetch] location?session_key=9839&driver_number=10 -> 34452 rows
+[fetch] location?session_key=9839&driver_number=43 -> 34452 rows
+[pitwall] map cars: 20/20
+[pitwall] wrote E:\adityap\PitWallAi\public\data\2025-24-abu-dhabi (578 moments, gz=1.12MB)
+[fetch] drivers?session_key=9835 -> 20 rows
+[fetch] laps?session_key=9835 -> 286 rows
+[quali] 2025-24-abu-dhabi: 286 laps
+[quali] wrote E:\adityap\PitWallAi\public\data\2025-24-abu-dhabi\quali.json (20 drivers)
+
+===== check_data =====
+[check] 2023-16-singapore: total=1.16MB easy=56KB
+[check] 2023-22-las-vegas: total=1.03MB easy=68KB
+[check] 2024-06-miami: total=1.14MB easy=55KB
+[check] 2024-12-british: total=1.00MB easy=43KB
+[check] 2024-21-brazil: total=1.06MB easy=54KB
+[check] 2025-01-australia: total=0.97MB easy=56KB
+[check] 2025-02-china: total=1.02MB easy=50KB
+[check] 2025-03-japan: total=1.07MB easy=43KB
+[check] 2025-04-bahrain: total=1.28MB easy=82KB
+[check] 2025-05-saudi-arabia: total=0.98MB easy=44KB
+[check] 2025-06-miami: total=0.61MB easy=29KB
+[check] 2025-07-emilia-romagna: total=1.12MB easy=64KB
+[check] 2025-08-monaco: total=1.14MB easy=60KB
+[check] 2025-09-spain: total=1.09MB easy=64KB
+[check] 2025-10-canada: total=1.11MB easy=67KB
+[check] 2025-11-austria: total=0.93MB easy=57KB
+[check] 2025-12-british: total=1.01MB easy=61KB
+[check] 2025-13-belgium: total=1.09MB easy=42KB
+[check] 2025-14-hungary: total=1.18MB easy=61KB
+[check] 2025-15-dutch: total=1.21MB easy=71KB
+[check] 2025-16-italian: total=0.91MB easy=46KB
+[check] 2025-17-azerbaijan: total=1.14MB easy=49KB
+[check] 2025-18-singapore: total=1.25MB easy=55KB
+[check] 2025-19-americas: total=1.11MB easy=47KB
+[check] 2025-20-mexico: total=1.14MB easy=64KB
+[check] 2025-21-brazil: total=1.07MB easy=75KB
+[check] 2025-22-las-vegas: total=0.90MB easy=41KB
+[check] 2025-23-qatar: total=1.05MB easy=56KB
+[check] 2025-24-abu-dhabi: total=1.12MB easy=63KB
+[check] 2026-15-italian: total=1.07MB easy=61KB
+[check] 2026-16-madrid: total=1.16MB easy=45KB
+[check] 2026-17-azerbaijan: total=0.00MB easy=0KB
+[check] 2026-18-malaysia: total=1.28MB easy=86KB
+[check] 2026-19-singapore: total=1.27MB easy=53KB
+[check] history: total=0.08MB easy=20KB

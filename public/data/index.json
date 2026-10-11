@@ -425,6 +425,48 @@
    "story": "VER passes NOR for P2; NOR passes VER for P2"
   },
   {
+   "id": "2025-16-italian",
+   "year": 2025,
+   "round": 16,
+   "name": "Italy Grand Prix",
+   "circuit": "Monza",
+   "date": "2025-09-07",
+   "coverage": {
+    "telemetry": true,
+    "telemetryDrivers": [
+     "VER",
+     "NOR",
+     "PIA"
+    ],
+    "radio": true,
+    "weather": true,
+    "intervals": true
+   },
+   "featured": true,
+   "story": "ALO passes ANT for P6; LEC passes PIA for P3"
+  },
+  {
+   "id": "2025-17-azerbaijan",
+   "year": 2025,
+   "round": 17,
+   "name": "Azerbaijan Grand Prix",
+   "circuit": "Baku",
+   "date": "2025-09-21",
+   "coverage": {
+    "telemetry": true,
+    "telemetryDrivers": [
+     "VER",
+     "RUS",
+     "SAI"
+    ],
+    "radio": true,
+    "weather": true,
+    "intervals": true
+   },
+   "featured": true,
+   "story": "TSU passes RUS for P5; RUS passes TSU for P5"
+  },
+  {
    "id": "2025-18-singapore",
    "year": 2025,
    "round": 18,
@@ -444,6 +486,132 @@
    },
    "featured": true,
    "story": "NOR passes ANT for P4; LEC passes HAM for P6"
+  },
+  {
+   "id": "2025-19-americas",
+   "year": 2025,
+   "round": 19,
+   "name": "United States Grand Prix",
+   "circuit": "Austin",
+   "date": "2025-10-19",
+   "coverage": {
+    "telemetry": true,
+    "telemetryDrivers": [
+     "VER",
+     "NOR",
+     "LEC"
+    ],
+    "radio": true,
+    "weather": true,
+    "intervals": true
+   },
+   "featured": true,
+   "story": "PIA passes HAM for P5; ANT passes HAM for P6"
+  },
+  {
+   "id": "2025-20-mexico",
+   "year": 2025,
+   "round": 20,
+   "name": "Mexico Grand Prix",
+   "circuit": "Mexico City",
+   "date": "2025-10-26",
+   "coverage": {
+    "telemetry": true,
+    "telemetryDrivers": [
+     "NOR",
+     "LEC",
+     "VER"
+    ],
+    "radio": true,
+    "weather": true,
+    "intervals": true
+   },
+   "featured": true,
+   "story": "VER passes RUS for P4; HAM passes LEC for P2"
+  },
+  {
+   "id": "2025-21-brazil",
+   "year": 2025,
+   "round": 21,
+   "name": "S\u00e3o Paulo Grand Prix",
+   "circuit": "Interlagos",
+   "date": "2025-11-09",
+   "coverage": {
+    "telemetry": true,
+    "telemetryDrivers": [
+     "NOR",
+     "ANT",
+     "VER"
+    ],
+    "radio": true,
+    "weather": true,
+    "intervals": true
+   },
+   "featured": true,
+   "story": "LAW passes RUS for P6; LEC passes ANT for P2"
+  },
+  {
+   "id": "2025-22-las-vegas",
+   "year": 2025,
+   "round": 22,
+   "name": "United States Grand Prix",
+   "circuit": "Las Vegas",
+   "date": "2025-11-23",
+   "coverage": {
+    "telemetry": true,
+    "telemetryDrivers": [
+     "VER",
+     "NOR",
+     "RUS"
+    ],
+    "radio": true,
+    "weather": true,
+    "intervals": true
+   },
+   "featured": true,
+   "story": "VER passes NOR for P1; RUS passes SAI for P3"
+  },
+  {
+   "id": "2025-23-qatar",
+   "year": 2025,
+   "round": 23,
+   "name": "Qatar Grand Prix",
+   "circuit": "Lusail",
+   "date": "2025-11-30",
+   "coverage": {
+    "telemetry": true,
+    "telemetryDrivers": [
+     "VER",
+     "PIA",
+     "SAI"
+    ],
+    "radio": true,
+    "weather": true,
+    "intervals": true
+   },
+   "featured": true,
+   "story": "ANT passes RUS for P4; ANT passes VER for P3"
+  },
+  {
+   "id": "2025-24-abu-dhabi",
+   "year": 2025,
+   "round": 24,
+   "name": "United Arab Emirates Grand Prix",
+   "circuit": "Yas Marina Circuit",
+   "date": "2025-12-07",
+   "coverage": {
+    "telemetry": true,
+    "telemetryDrivers": [
+     "VER",
+     "PIA",
+     "NOR"
+    ],
+    "radio": true,
+    "weather": true,
+    "intervals": true
+   },
+   "featured": true,
+   "story": "LEC passes RUS for P4; ALO passes RUS for P5"
   },
   {
    "id": "2026-15-italian",
