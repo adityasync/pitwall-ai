@@ -1,9 +1,74 @@
 {
  "seasons": [
+  2026,
   2025,
-  2024
+  2024,
+  2023
  ],
  "races": [
+  {
+   "id": "2023-16-singapore",
+   "year": 2023,
+   "round": 16,
+   "name": "Singapore Grand Prix",
+   "circuit": "Singapore",
+   "date": "2023-09-17",
+   "coverage": {
+    "telemetry": true,
+    "telemetryDrivers": [
+     "SAI",
+     "NOR",
+     "HAM"
+    ],
+    "radio": true,
+    "weather": true,
+    "intervals": true
+   },
+   "featured": true,
+   "story": "LEC passes RUS for P2; HAM passes NOR for P4"
+  },
+  {
+   "id": "2023-22-las-vegas",
+   "year": 2023,
+   "round": 22,
+   "name": "United States Grand Prix",
+   "circuit": "Las Vegas",
+   "date": "2023-11-19",
+   "coverage": {
+    "telemetry": true,
+    "telemetryDrivers": [
+     "VER",
+     "LEC",
+     "PER"
+    ],
+    "radio": true,
+    "weather": true,
+    "intervals": true
+   },
+   "featured": true,
+   "story": "VER passes LEC for P1; MAG passes SAR for P6"
+  },
+  {
+   "id": "2024-06-miami",
+   "year": 2024,
+   "round": 6,
+   "name": "United States Grand Prix",
+   "circuit": "Miami",
+   "date": "2024-05-05",
+   "coverage": {
+    "telemetry": true,
+    "telemetryDrivers": [
+     "NOR",
+     "VER",
+     "LEC"
+    ],
+    "radio": true,
+    "weather": true,
+    "intervals": true
+   },
+   "featured": true,
+   "story": "SAI passes LEC for P2; PER passes LEC for P3"
+  },
   {
    "id": "2024-12-british",
    "year": 2024,
@@ -47,6 +112,319 @@
    "story": "RUS passes NOR for P1; LEC passes LAW for P5"
   },
   {
+   "id": "2025-01-australia",
+   "year": 2025,
+   "round": 1,
+   "name": "Australia Grand Prix",
+   "circuit": "Melbourne",
+   "date": "2025-03-16",
+   "coverage": {
+    "telemetry": true,
+    "telemetryDrivers": [
+     "NOR",
+     "VER"
+    ],
+    "radio": true,
+    "weather": true,
+    "intervals": true
+   },
+   "featured": true,
+   "story": "LEC passes ALB for P6; VER passes PIA for P2"
+  },
+  {
+   "id": "2025-02-china",
+   "year": 2025,
+   "round": 2,
+   "name": "China Grand Prix",
+   "circuit": "Shanghai",
+   "date": "2025-03-23",
+   "coverage": {
+    "telemetry": true,
+    "telemetryDrivers": [
+     "PIA",
+     "NOR"
+    ],
+    "radio": true,
+    "weather": true,
+    "intervals": true
+   },
+   "featured": true,
+   "story": "NOR passes RUS for P2; HAD passes LEC for P6"
+  },
+  {
+   "id": "2025-03-japan",
+   "year": 2025,
+   "round": 3,
+   "name": "Japan Grand Prix",
+   "circuit": "Suzuka",
+   "date": "2025-04-06",
+   "coverage": {
+    "telemetry": true,
+    "telemetryDrivers": [
+     "VER",
+     "NOR",
+     "PIA"
+    ],
+    "radio": true,
+    "weather": true,
+    "intervals": true
+   },
+   "featured": true,
+   "story": "ANT passes RUS for P5; HAM passes RUS for P6"
+  },
+  {
+   "id": "2025-04-bahrain",
+   "year": 2025,
+   "round": 4,
+   "name": "Bahrain Grand Prix",
+   "circuit": "Sakhir",
+   "date": "2025-04-13",
+   "coverage": {
+    "telemetry": true,
+    "telemetryDrivers": [
+     "PIA",
+     "RUS",
+     "NOR"
+    ],
+    "radio": true,
+    "weather": true,
+    "intervals": true
+   },
+   "featured": true,
+   "story": "SAI passes NOR for P6; SAI passes ANT for P5"
+  },
+  {
+   "id": "2025-05-saudi-arabia",
+   "year": 2025,
+   "round": 5,
+   "name": "Saudi Arabia Grand Prix",
+   "circuit": "Jeddah",
+   "date": "2025-04-20",
+   "coverage": {
+    "telemetry": true,
+    "telemetryDrivers": [
+     "PIA",
+     "VER",
+     "LEC"
+    ],
+    "radio": true,
+    "weather": true,
+    "intervals": true
+   },
+   "featured": true,
+   "story": "PIA passes VER for P1; HAM passes SAI for P6"
+  },
+  {
+   "id": "2025-06-miami",
+   "year": 2025,
+   "round": 6,
+   "name": "United States Grand Prix",
+   "circuit": "Miami",
+   "date": "2025-05-04",
+   "coverage": {
+    "telemetry": true,
+    "telemetryDrivers": [
+     "PIA",
+     "NOR",
+     "RUS"
+    ],
+    "radio": true,
+    "weather": true,
+    "intervals": true
+   },
+   "featured": true,
+   "story": "ALB passes SAI for P6; PIA passes ANT for P3"
+  },
+  {
+   "id": "2025-07-emilia-romagna",
+   "year": 2025,
+   "round": 7,
+   "name": "Italy Grand Prix",
+   "circuit": "Imola",
+   "date": "2025-05-18",
+   "coverage": {
+    "telemetry": true,
+    "telemetryDrivers": [
+     "VER",
+     "NOR",
+     "PIA"
+    ],
+    "radio": true,
+    "weather": true,
+    "intervals": true
+   },
+   "featured": true,
+   "story": "RUS passes VER for P2; ALO passes NOR for P4"
+  },
+  {
+   "id": "2025-08-monaco",
+   "year": 2025,
+   "round": 8,
+   "name": "Monaco Grand Prix",
+   "circuit": "Monte Carlo",
+   "date": "2025-05-25",
+   "coverage": {
+    "telemetry": true,
+    "telemetryDrivers": [
+     "NOR",
+     "LEC",
+     "PIA"
+    ],
+    "radio": true,
+    "weather": true,
+    "intervals": true
+   },
+   "featured": true,
+   "story": "ALO passes HAD for P5; HAM passes HAD for P6"
+  },
+  {
+   "id": "2025-09-spain",
+   "year": 2025,
+   "round": 9,
+   "name": "Spain Grand Prix",
+   "circuit": "Catalunya",
+   "date": "2025-06-01",
+   "coverage": {
+    "telemetry": true,
+    "telemetryDrivers": [
+     "PIA",
+     "NOR",
+     "LEC"
+    ],
+    "radio": true,
+    "weather": true,
+    "intervals": true
+   },
+   "featured": true,
+   "story": "VER passes NOR for P2; LEC passes ANT for P6"
+  },
+  {
+   "id": "2025-10-canada",
+   "year": 2025,
+   "round": 10,
+   "name": "Canada Grand Prix",
+   "circuit": "Montreal",
+   "date": "2025-06-15",
+   "coverage": {
+    "telemetry": true,
+    "telemetryDrivers": [
+     "RUS",
+     "VER",
+     "ANT"
+    ],
+    "radio": true,
+    "weather": true,
+    "intervals": true
+   },
+   "featured": true,
+   "story": "NOR passes ALO for P6; ANT passes PIA for P3"
+  },
+  {
+   "id": "2025-11-austria",
+   "year": 2025,
+   "round": 11,
+   "name": "Austria Grand Prix",
+   "circuit": "Spielberg",
+   "date": "2025-06-29",
+   "coverage": {
+    "telemetry": true,
+    "telemetryDrivers": [
+     "NOR",
+     "PIA",
+     "LEC"
+    ],
+    "radio": true,
+    "weather": true,
+    "intervals": true
+   },
+   "featured": true,
+   "story": "PIA passes LEC for P2; RUS passes HAM for P4"
+  },
+  {
+   "id": "2025-12-british",
+   "year": 2025,
+   "round": 12,
+   "name": "British Grand Prix",
+   "circuit": "Silverstone",
+   "date": "2025-07-06",
+   "coverage": {
+    "telemetry": true,
+    "telemetryDrivers": [
+     "NOR",
+     "PIA",
+     "HUL"
+    ],
+    "radio": true,
+    "weather": true,
+    "intervals": true
+   },
+   "featured": true,
+   "story": "HAM passes RUS for P4; ALO passes LEC for P6"
+  },
+  {
+   "id": "2025-13-belgium",
+   "year": 2025,
+   "round": 13,
+   "name": "Belgium Grand Prix",
+   "circuit": "Spa-Francorchamps",
+   "date": "2025-07-27",
+   "coverage": {
+    "telemetry": true,
+    "telemetryDrivers": [
+     "PIA",
+     "NOR",
+     "LEC"
+    ],
+    "radio": true,
+    "weather": true,
+    "intervals": true
+   },
+   "featured": true,
+   "story": "PIA passes NOR for P1; RUS passes ALB for P5"
+  },
+  {
+   "id": "2025-14-hungary",
+   "year": 2025,
+   "round": 14,
+   "name": "Hungary Grand Prix",
+   "circuit": "Hungaroring",
+   "date": "2025-08-03",
+   "coverage": {
+    "telemetry": true,
+    "telemetryDrivers": [
+     "NOR",
+     "PIA",
+     "RUS"
+    ],
+    "radio": true,
+    "weather": true,
+    "intervals": true
+   },
+   "featured": true,
+   "story": "RUS passes NOR for P3; ALO passes NOR for P4"
+  },
+  {
+   "id": "2025-15-dutch",
+   "year": 2025,
+   "round": 15,
+   "name": "Netherlands Grand Prix",
+   "circuit": "Zandvoort",
+   "date": "2025-08-31",
+   "coverage": {
+    "telemetry": true,
+    "telemetryDrivers": [
+     "PIA",
+     "VER",
+     "HAD"
+    ],
+    "radio": true,
+    "weather": true,
+    "intervals": true
+   },
+   "featured": true,
+   "story": "VER passes NOR for P2; NOR passes VER for P2"
+  },
+  {
    "id": "2025-18-singapore",
    "year": 2025,
    "round": 18,
@@ -66,6 +444,89 @@
    },
    "featured": true,
    "story": "NOR passes ANT for P4; LEC passes HAM for P6"
+  },
+  {
+   "id": "2026-15-italian",
+   "year": 2026,
+   "round": 15,
+   "name": "Italy Grand Prix",
+   "circuit": "Monza",
+   "date": "2026-09-06",
+   "coverage": {
+    "telemetry": true,
+    "telemetryDrivers": [
+     "ANT",
+     "RUS",
+     "VER"
+    ],
+    "radio": true,
+    "weather": true,
+    "intervals": true
+   },
+   "featured": true,
+   "story": "PIA passes VER for P5; VER passes PIA for P5"
+  },
+  {
+   "id": "2026-16-madrid",
+   "year": 2026,
+   "round": 16,
+   "name": "Spain Grand Prix",
+   "circuit": "Madring",
+   "date": "2026-09-13",
+   "coverage": {
+    "telemetry": true,
+    "telemetryDrivers": [
+     "VER",
+     "NOR"
+    ],
+    "radio": true,
+    "weather": true,
+    "intervals": true
+   },
+   "featured": true,
+   "story": "ANT passes NOR for P1; HAM passes VER for P3"
+  },
+  {
+   "id": "2026-18-malaysia",
+   "year": 2026,
+   "round": 18,
+   "name": "Malaysian Grand Prix",
+   "circuit": "Kuala Lumpur",
+   "date": "2026-10-04",
+   "coverage": {
+    "telemetry": true,
+    "telemetryDrivers": [
+     "VER",
+     "ANT",
+     "HAM"
+    ],
+    "radio": true,
+    "weather": true,
+    "intervals": true
+   },
+   "featured": true,
+   "story": "PIA passes NOR for P5; PIA passes LEC for P4"
+  },
+  {
+   "id": "2026-19-singapore",
+   "year": 2026,
+   "round": 19,
+   "name": "Singapore Grand Prix",
+   "circuit": "Singapore",
+   "date": "2026-10-11",
+   "coverage": {
+    "telemetry": true,
+    "telemetryDrivers": [
+     "VER",
+     "LEC",
+     "ANT"
+    ],
+    "radio": true,
+    "weather": true,
+    "intervals": true
+   },
+   "featured": true,
+   "story": "ANT passes HAM for P3; NOR passes HAM for P4"
   }
  ]
 }

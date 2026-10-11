@@ -44,28 +44,28 @@ export default function RacesPage() {
   }, []);
 
   return (
-    <main className="mx-auto flex w-full max-w-[1360px] flex-col gap-10 px-4 py-10">
-      <section>
-        <p className="panel-label">Your second screen for Formula 1</p>
-        <h1 className="display mt-2 text-5xl font-bold tracking-tight sm:text-6xl">
+    <main className="mx-auto flex w-full max-w-[1280px] flex-col gap-12 px-4 py-10 sm:px-6 sm:py-14">
+      <section className="section-head">
+        <p className="panel-label">Pick a race and a mode</p>
+        <h1 className="display mt-3 text-5xl font-bold tracking-tight sm:text-6xl">
           Watch the race. <span className="text-[var(--accent)]">Understand</span> the race.
         </h1>
-        <p className="mt-3 max-w-2xl text-lg text-[var(--muted)]">
+        <p className="mt-4 max-w-2xl text-lg leading-relaxed text-[var(--muted)]">
           Tap any overtake, pit stop or gap change and get a plain explanation
           backed by real lap data, in English or Hinglish.
         </p>
       </section>
 
-      <section className="grid gap-3 md:grid-cols-2">
+      <section className="grid gap-4 md:grid-cols-2">
         {MODES.map((m) => (
-          <div key={m.mode} className="rounded-md border border-[var(--border)] bg-[var(--panel)] p-6">
+          <div key={m.mode} className="card card-hover flex flex-col p-6 sm:p-8">
             <p className="panel-label">{m.tag}</p>
-            <p className="display mt-2 text-3xl font-bold uppercase">{m.name}</p>
-            <p className="mt-2 text-[var(--muted)]">{m.text}</p>
+            <p className="display mt-2 text-3xl font-bold uppercase tracking-tight">{m.name}</p>
+            <p className="mt-3 max-w-md leading-relaxed text-[var(--muted)]">{m.text}</p>
             {races.length > 0 && (
               <Link
                 href={`/race/${races[0].id}/${m.mode}`}
-                className="touch mt-4 inline-flex items-center font-semibold text-[var(--accent)]"
+                className="touch mt-5 inline-flex items-center self-start font-semibold text-[var(--accent)] hover:underline"
               >
                 {m.cta} →
               </Link>
@@ -75,44 +75,47 @@ export default function RacesPage() {
       </section>
 
       <section>
-        <h2 className="display text-3xl font-bold">Pick a race to replay</h2>
-        {status === "loading" && <p className="mt-3 text-[var(--muted)]">Loading races…</p>}
+        <div className="section-head">
+          <h2 className="display text-3xl font-bold tracking-tight sm:text-4xl">Pick a race to replay</h2>
+        </div>
+        <div className="section-rule" aria-hidden />
+        {status === "loading" && <p className="mt-6 text-[var(--muted)]">Loading races…</p>}
         {status === "empty" && (
-          <div className="mt-3 rounded-md border border-[var(--border)] bg-[var(--panel)] p-6 text-[var(--muted)]">
+          <div className="card mt-6 p-6 text-[var(--muted)]">
             No race files yet — run <span className="tnum">pnpm data:build 2025 18</span>.
           </div>
         )}
         {status === "error" && (
-          <div className="mt-3 rounded-md border border-[var(--bad)] p-6 text-[var(--bad)]">
+          <div className="card mt-6 border-[var(--bad)] p-6 text-[var(--bad)]">
             Could not load the race list.
           </div>
         )}
         {status === "ready" && (
-          <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {races.map((r) => (
-              <li key={r.id} className="flex flex-col rounded-md border border-[var(--border)] bg-[var(--panel)] p-5">
+              <li key={r.id} className="card card-hover flex flex-col p-6">
                 <p className="tnum text-xs text-[var(--muted)]">
                   {r.year} · ROUND {r.round} · {r.date}
                 </p>
-                <p className="display mt-1 text-2xl font-bold">{r.name}</p>
+                <p className="display mt-2 text-2xl font-bold leading-tight">{r.name}</p>
                 <p className="text-sm text-[var(--muted)]">{r.circuit}</p>
-                <p className="mt-2 flex-1 text-sm">{r.story}</p>
-                <p className="tnum mt-3 flex flex-wrap gap-2 text-[11px] text-[var(--muted)]">
-                  <span className="rounded border border-[var(--border-strong)] px-1.5 py-0.5">REPLAY</span>
-                  {r.coverage.radio && <span className="rounded border border-[var(--border-strong)] px-1.5 py-0.5">RADIO</span>}
-                  {r.coverage.telemetry && <span className="rounded border border-[var(--border-strong)] px-1.5 py-0.5">TEL</span>}
-                  {r.coverage.weather && <span className="rounded border border-[var(--border-strong)] px-1.5 py-0.5">WX</span>}
+                <p className="mt-3 flex-1 text-sm leading-relaxed">{r.story}</p>
+                <p className="tnum mt-4 flex flex-wrap gap-1.5 text-[11px] text-[var(--muted)]">
+                  <span className="rounded-md border border-[var(--border-strong)] bg-[var(--raised)] px-1.5 py-0.5">REPLAY</span>
+                  {r.coverage.radio && <span className="rounded-md border border-[var(--border-strong)] bg-[var(--raised)] px-1.5 py-0.5">RADIO</span>}
+                  {r.coverage.telemetry && <span className="rounded-md border border-[var(--border-strong)] bg-[var(--raised)] px-1.5 py-0.5">TEL</span>}
+                  {r.coverage.weather && <span className="rounded-md border border-[var(--border-strong)] bg-[var(--raised)] px-1.5 py-0.5">WX</span>}
                 </p>
-                <div className="mt-4 grid grid-cols-2 gap-2">
+                <div className="mt-4 grid grid-cols-2 gap-2 pt-1">
                   <Link
                     href={`/race/${r.id}/easy`}
-                    className="touch inline-flex items-center justify-center rounded-md bg-[var(--accent)] text-sm font-bold text-black"
+                    className="btn btn-primary px-3 text-sm"
                   >
                     Easy →
                   </Link>
                   <Link
                     href={`/race/${r.id}/pro`}
-                    className="touch inline-flex items-center justify-center rounded-md border border-[var(--border-strong)] text-sm font-semibold"
+                    className="btn btn-secondary px-3 text-sm"
                   >
                     Pro →
                   </Link>
@@ -121,7 +124,7 @@ export default function RacesPage() {
             ))}
           </ul>
         )}
-        <p className="mt-4 text-sm text-[var(--muted)]">
+        <p className="mt-6 text-sm text-[var(--faint)]">
           Sample list. Replays use free historical data; live needs a paid feed.
         </p>
       </section>

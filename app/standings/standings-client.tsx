@@ -91,7 +91,7 @@ export function StandingsClient() {
   }, [rows, bundle, champ]);
 
   return (
-    <main className="mx-auto w-full max-w-5xl px-4 pb-10 pt-6">
+    <main className="mx-auto w-full max-w-5xl px-4 sm:px-6 pb-12 pt-5">
       <p className="panel-label">Standings · if the race ended now</p>
       <h1 className="display mt-1 text-4xl font-bold">The title fight, live.</h1>
       <p className="mt-2 max-w-2xl text-sm text-[var(--muted)]">

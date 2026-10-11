@@ -25,13 +25,13 @@ export function HeroCtas() {
     <div className="mt-6 flex flex-wrap gap-3">
       <Link
         href={easy}
-        className="touch inline-flex items-center justify-center rounded-md bg-[var(--accent)] px-6 font-semibold text-black"
+        className="btn btn-primary px-7"
       >
         Start in Easy mode
       </Link>
       <Link
         href={pro}
-        className="touch inline-flex items-center justify-center rounded-md border border-[var(--border-strong)] px-6 font-semibold"
+        className="btn btn-secondary px-7"
       >
         Open the pit wall
       </Link>
@@ -57,43 +57,47 @@ export function HeroCard() {
 
   if (!race) {
     return (
-      <div className="overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--bar)] p-8" aria-hidden>
+      <div className="card p-8" aria-hidden>
         <p className="tnum animate-pulse text-sm text-[var(--muted)]">Loading featured replay…</p>
       </div>
     );
   }
   return (
-    <div className="overflow-hidden rounded-xl border border-[var(--border-strong)] bg-[var(--bar)]">
-      <div className="flex items-center justify-between border-b border-[var(--border)] px-4 py-2.5">
-        <span className="tnum text-xs font-bold tracking-widest text-[var(--accent)]">REPLAY</span>
-        <span className="tnum text-xs text-[var(--muted)]">{race.name.toUpperCase()}</span>
-        <span className="tnum rounded bg-[var(--accent)] px-2 py-0.5 text-[11px] font-bold text-black">
+    <div className="card overflow-hidden">
+      <div className="h-0.5 bg-gradient-to-r from-[var(--accent-deep)] via-[var(--accent)] to-transparent" aria-hidden />
+      <div className="flex items-center justify-between gap-3 px-5 py-3 sm:px-6">
+        <span className="tnum flex items-center gap-2 text-xs font-bold tracking-widest text-[var(--accent)]">
+          <span aria-hidden className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-[var(--accent)]" />
+          REPLAY
+        </span>
+        <span className="tnum truncate text-xs text-[var(--muted)]">{race.name.toUpperCase()}</span>
+        <span className="tnum shrink-0 rounded-md bg-[var(--accent-deep)] px-2 py-0.5 text-[11px] font-bold text-white">
           EASY
         </span>
       </div>
-      <div className="p-4">
+      <div className="border-t border-[var(--border)] p-5 sm:p-6">
         <p className="tnum text-xs text-[var(--muted)]">
           {race.year} · ROUND {race.round} · {race.date}
         </p>
-        <p className="display mt-1 text-2xl font-bold">{race.story}</p>
-        <p className="tnum mt-2 flex gap-1.5 text-[11px] text-[var(--muted)]">
-          <span className="rounded border border-[var(--border-strong)] px-1.5 py-0.5">REPLAY</span>
-          {race.coverage.radio && <span className="rounded border border-[var(--border-strong)] px-1.5 py-0.5">RADIO</span>}
-          {race.coverage.telemetry && <span className="rounded border border-[var(--border-strong)] px-1.5 py-0.5">TEL</span>}
-          {race.coverage.weather && <span className="rounded border border-[var(--border-strong)] px-1.5 py-0.5">WX</span>}
+        <p className="display mt-2 text-3xl font-bold leading-tight">{race.story}</p>
+        <p className="tnum mt-3 flex flex-wrap gap-1.5 text-[11px] text-[var(--muted)]">
+          <span className="rounded-md border border-[var(--border-strong)] bg-[var(--raised)] px-1.5 py-0.5">REPLAY</span>
+          {race.coverage.radio && <span className="rounded-md border border-[var(--border-strong)] bg-[var(--raised)] px-1.5 py-0.5">RADIO</span>}
+          {race.coverage.telemetry && <span className="rounded-md border border-[var(--border-strong)] bg-[var(--raised)] px-1.5 py-0.5">TEL</span>}
+          {race.coverage.weather && <span className="rounded-md border border-[var(--border-strong)] bg-[var(--raised)] px-1.5 py-0.5">WX</span>}
         </p>
         <Link
           href={`/race/${race.id}/easy`}
-          className="touch mt-3 inline-flex items-center rounded-md border border-[var(--accent)] px-4 py-2 text-sm font-bold text-[var(--accent)]"
+          className="btn btn-secondary mt-4 border-[var(--accent)] text-[var(--accent)] hover:text-[var(--accent)]"
         >
           WHY? — tap a moment
         </Link>
       </div>
-      <div className="border-t border-[var(--border)] p-4">
+      <div className="border-t border-[var(--border)] bg-black/20 p-5 sm:px-6">
         <p className="panel-label mb-1">Grounded in lap data</p>
-        <p className="text-sm text-[var(--muted)]">
+        <p className="text-sm leading-relaxed text-[var(--muted)]">
           Every number labelled measured, derived or estimate.{" "}
-          <Link href="/methods" className="text-[var(--accent)] underline">
+          <Link href="/methods" className="text-[var(--accent)] underline underline-offset-2">
             How we stay honest
           </Link>
         </p>

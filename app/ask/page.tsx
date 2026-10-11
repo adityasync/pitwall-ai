@@ -106,7 +106,7 @@ function AskPage() {
 
   if (!raceId) {
     return (
-      <main className="mx-auto w-full max-w-3xl px-4 py-10">
+      <main className="mx-auto w-full max-w-3xl px-4 sm:px-6 py-10">
         <StateCard kind="loading" title="Finding a replay" text="Loading the race list…" progress={50} />
       </main>
     );
@@ -163,12 +163,12 @@ function AskPage() {
           className="touch min-w-0 flex-1 rounded-md border border-[var(--border-strong)] bg-[var(--raised)] px-4 text-sm"
         />
         <button type="submit" disabled={thinking}
-          className="touch rounded-md bg-[var(--accent)] px-5 text-sm font-bold text-black disabled:opacity-50">
+          className="touch rounded-md bg-[var(--accent-deep)] px-5 text-sm font-bold text-white disabled:opacity-50">
           Ask
         </button>
       </form>
 
-      <section aria-label="What the AI can see" className="rounded-md border border-[var(--border)] bg-[var(--panel)] p-4">
+      <section aria-label="What the AI can see" className="card p-4">
         <p className="panel-label mb-2">What the AI can see</p>
         <ul className="tnum grid gap-1 text-xs sm:grid-cols-2">
           {coverage.map(([name, ok]) => (
@@ -188,7 +188,7 @@ function AskPage() {
 
 export default function AskRoute() {
   return (
-    <Suspense fallback={<main className="mx-auto w-full max-w-3xl px-4 py-10"><p className="text-[var(--muted)]">Loading…</p></main>}>
+    <Suspense fallback={<main className="mx-auto w-full max-w-3xl px-4 sm:px-6 py-10"><p className="text-[var(--muted)]">Loading…</p></main>}>
       <AskPage />
     </Suspense>
   );

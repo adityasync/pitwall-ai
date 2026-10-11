@@ -33,13 +33,14 @@ OPENF1 = "https://api.openf1.org/v1"
 UA = {"User-Agent": "pitwall-ai/0.1 (+unofficial fan project)"}
 
 # Pipeline tunables — one place, no magic numbers below.
-FETCH_THROTTLE_S = 0.35  # polite gap between OpenF1 requests
-FETCH_RETRIES = 3
+FETCH_THROTTLE_S = 1.0  # polite gap between OpenF1 requests (0.35 caused 429s under backfill load)
+FETCH_RETRIES = 4
 RESAMPLE_M = 10  # docs/05: telemetry every 5–10 m of lap distance
 LAP_MIN_M = 3000  # plausible F1 lap length bounds (m, via speed integral)
 LAP_MAX_M = 8000
 PIT_SUSPICIOUS_S = 120  # longer pit durations are red-flag stoppages, nulled
-OUTLINE_POINTS = 2000  # track outline downsample target
+OUTLINE_POINTS = 1500  # track outline downsample target (smoothed, was 2000 raw)
+OUTLINE_SMOOTH = 9  # moving-average window on x/y to kill OpenF1 location jitter
 TELEMETRY_KEEP_EVERY = 5  # store every Nth lap + fastest 3 + opening laps
 CORNER_SMOOTH = 5  # speed smoothing window (samples, ~1.5 s)
 CORNER_PROMINENCE_KMH = 8  # min valley depth vs ±150 m window
@@ -81,6 +82,8 @@ LOCATION_SLUG = {    "Marina Bay": "singapore",
     "São Paulo": "brazil",
     "Interlagos": "brazil",
     "Las Vegas": "las-vegas",
+    "Kuala Lumpur": "malaysia",
+    "Sepang": "malaysia",
     "Lusail": "qatar",
     "Yas Island": "abu-dhabi",
     "Shanghai": "china",
@@ -89,6 +92,14 @@ LOCATION_SLUG = {    "Marina Bay": "singapore",
 
 def slugify(s: str) -> str:
     return "".join(c.lower() if c.isalnum() else "-" for c in s).strip("-").replace("--", "-")
+
+
+def gp_name(ses: dict) -> str:
+    """Display GP name. Location overrides country: the feed mislabels the
+    Sepang return (country_name='Bahrain' @ Kuala Lumpur)."""
+    if (ses.get("location") or "") in ("Kuala Lumpur", "Sepang"):
+        return "Malaysian"
+    return GP_NAME.get(ses.get("country_name"), ses.get("country_name"))
 
 
 def fetch(url: str, cache_path: Path | None = None, retries: int = FETCH_RETRIES) -> object:
@@ -100,6 +111,8 @@ def fetch(url: str, cache_path: Path | None = None, retries: int = FETCH_RETRIES
             res = requests.get(url, headers=UA, timeout=60, verify=certifi.where())
             res.raise_for_status()
             data = res.json()
+            n = len(data) if isinstance(data, list) else 1
+            print(f"[fetch] {url.split('/v1/')[-1]} -> {n} rows", flush=True)
             if cache_path is not None:
                 cache_path.parent.mkdir(parents=True, exist_ok=True)
                 cache_path.write_text(json.dumps(data), encoding="utf-8")
@@ -107,7 +120,15 @@ def fetch(url: str, cache_path: Path | None = None, retries: int = FETCH_RETRIES
             return data
         except Exception as e:  # noqa: BLE001
             last = e
-            time.sleep(2 * (i + 1))
+            wait = 2 * (i + 1)
+            try:  # honour the server's own back-off ask on 429
+                ra = getattr(getattr(e, "response", None), "headers", {}).get("Retry-After")
+                if ra is not None:
+                    wait = max(wait, int(ra) + 1)
+            except (TypeError, ValueError):
+                pass
+            print(f"[fetch] retry {i + 1}/{retries} after {wait}s: {url.split('/v1/')[-1]}", flush=True)
+            time.sleep(wait)
     raise RuntimeError(f"fetch failed {url}: {last}")
 
 
@@ -138,6 +159,12 @@ def main() -> int:
 
     cdir = CACHE_BASE / race_id
     odir = OUT_BASE / race_id
+    # clean sweep: a crashed run must never leave stale files behind
+    # (e.g. radio.json from different coverage). Cache is separate, so a
+    # rebuild stays fast and offline.
+    import shutil
+    if odir.exists():
+        shutil.rmtree(odir)
     odir.mkdir(parents=True, exist_ok=True)
     (odir / "telemetry").mkdir(exist_ok=True)
 
@@ -146,16 +173,26 @@ def main() -> int:
         q = f"&{extra}" if extra else ""
         return fetch(f"{OPENF1}/{ep}?session_key={sk}{q}", cdir / f"raw_{name}.json")
 
+    def raw_opt(ep: str, extra: str = "") -> list:
+        """Endpoints the race can live without — a flaky feed must never kill
+        the whole build. Coverage flags + empty states handle the rest."""
+        try:
+            data = raw(ep, extra)
+            return data if isinstance(data, list) else []
+        except RuntimeError as e:
+            print(f"[pitwall] {ep} unavailable, degrading: {e}")
+            return []
+
     drivers_raw = raw("drivers")
     laps_raw = raw("laps")
     stints_raw = raw("stints")
-    pit_raw = raw("pit")
     pos_raw = raw("position")
-    iv_raw = raw("intervals")
-    ov_raw = raw("overtakes")
-    rc_raw = raw("race_control")
-    wx_raw = raw("weather")
-    radio_raw = raw("team_radio")
+    pit_raw = raw_opt("pit")
+    iv_raw = raw_opt("intervals")
+    ov_raw = raw_opt("overtakes")
+    rc_raw = raw_opt("race_control")
+    wx_raw = raw_opt("weather")
+    radio_raw = raw_opt("team_radio")
     try:
         champ_d = raw("championship_drivers")
         champ_t = raw("championship_teams")
@@ -167,15 +204,27 @@ def main() -> int:
           f"ov={len(ov_raw)} rc={len(rc_raw)} wx={len(wx_raw)} radio={len(radio_raw)}")
 
     acronym = {d["driver_number"]: d["name_acronym"] for d in drivers_raw}
-    # some races (e.g. wet Brazil 2024) carry null timestamps — drop those rows
+    # some races (e.g. wet Brazil 2024) carry null timestamps — drop those rows.
+    # Also drop malformed dates: one garbage string must not kill the build.
     def dated(rows, key="date"):
-        kept = [r for r in rows if r.get(key)]
+        kept = []
+        for r in rows:
+            if not r.get(key):
+                continue
+            try:
+                parse_t(r[key])
+                kept.append(r)
+            except (ValueError, TypeError):
+                continue
         if len(kept) != len(rows):
-            print(f"[pitwall] dropped {len(rows) - len(kept)} {key}-less rows")
+            print(f"[pitwall] dropped {len(rows) - len(kept)} bad-{key} rows")
         return kept
 
     laps_raw = dated(laps_raw, "date_start")
     laps_raw = [r for r in laps_raw if r.get("lap_number") is not None]
+    if not laps_raw:
+        print(f"[pitwall] {race_id}: no usable laps — aborting", file=sys.stderr)
+        return 2
     stints_raw = [s for s in stints_raw if s.get("lap_start") is not None and s.get("lap_end") is not None]
     pit_raw = dated(pit_raw)
     pos_raw = dated(pos_raw)
@@ -312,10 +361,13 @@ def main() -> int:
             return None
 
     for r in iv_raw:
+        t = rel(r["date"])
+        if t < 0 or t > race_end + 1:
+            continue  # feed leakage from outside the race window (SEP26: 3 rows at t=-8755 s)
         code = acronym.get(r["driver_number"], str(r["driver_number"]))
         d = iv_drivers.setdefault(code, {"gapLeader": [], "gapAhead": [], "ahead": []})
         # grow lists sparsely then align below
-        d.setdefault("_rows", []).append((rel(r["date"]), num(r.get("gap_to_leader")), num(r.get("interval")), None))
+        d.setdefault("_rows", []).append((t, num(r.get("gap_to_leader")), num(r.get("interval")), None))
     # ahead driver resolution needs ordering per timestamp — approximate: leave ahead null,
     # fill from position feed below where possible.
     for code, d in iv_drivers.items():
@@ -355,7 +407,7 @@ def main() -> int:
         my_pos_at = pos_at.get(code, [])
         ahead_arr = []
         for t, g in zip(series["t"], series["gapAhead"]):
-            i = min(int(t), len(t_axis) - 1)
+            i = max(0, min(int(t), len(t_axis) - 1))
             mine = my_pos_at[i] if i < len(my_pos_at) else None
             who = None
             if mine and mine > 1:
@@ -377,16 +429,37 @@ def main() -> int:
     num_of = {d["code"]: d["number"] for d in drivers}
 
     # ---- location outline (first telemetry driver) + per-driver telemetry ----
+    # One bad driver feed must not kill the race: skip + prune, keep going.
     track_outline = []
     tele_xy: dict[str, tuple] = {}  # code -> (t, x, y) arrays for map (Day 1: tele drivers only)
     ref_geom: dict = {}  # fastest lap geometry of first tele driver (corners/zones)
-    for idx, code in enumerate(tele_codes):
-        num = num_of[code]
-        car = raw("car_data", f"driver_number={num}")
-        loc = raw("location", f"driver_number={num}")
-        car = sorted(car, key=lambda r: r["date"])
-        # drop (0,0) warp rows — they add fake teleport distance
-        loc = sorted((r for r in loc if not (r["x"] == 0 and r["y"] == 0)), key=lambda r: r["date"])
+    outline_done = False
+    kept_tele: list[str] = []
+    for code in tele_codes:
+        num = num_of.get(code)
+        if num is None:
+            print(f"[pitwall] unknown telemetry code {code} — skipping")
+            continue
+        try:
+            car = raw("car_data", f"driver_number={num}")
+            loc = raw("location", f"driver_number={num}")
+        except RuntimeError as e:
+            print(f"[pitwall] no telemetry for {code}: {e}")
+            continue
+        if not isinstance(car, list) or not isinstance(loc, list):
+            print(f"[pitwall] bad telemetry payload for {code} — skipping")
+            continue
+        car = sorted(dated(car), key=lambda r: r["date"])
+        # drop (0,0) warp rows — they add fake teleport distance; require x/y
+        loc = sorted(
+            (r for r in dated(loc)
+             if r.get("x") is not None and r.get("y") is not None
+             and not (r["x"] == 0 and r["y"] == 0)),
+            key=lambda r: r["date"],
+        )
+        if len(car) < 10 or len(loc) < 2:
+            print(f"[pitwall] too few samples for {code} (car={len(car)}, loc={len(loc)}) — skipping")
+            continue
         loc_t = np.array([rel(r["date"]) for r in loc])
         loc_x = np.array([r["x"] for r in loc], dtype=float)
         loc_y = np.array([r["y"] for r in loc], dtype=float)
@@ -399,32 +472,64 @@ def main() -> int:
             while j + 1 < len(loc_t) and abs(loc_t[j + 1] - t) <= abs(loc_t[j] - t):
                 j += 1
             xs[i], ys[i] = loc_x[j], loc_y[j]
-        if idx == 0:
-            step = max(1, len(loc_x) // OUTLINE_POINTS)
-            track_outline = [[float(x), float(y)] for x, y in zip(loc_x[::step], loc_y[::step])]
+        first = not outline_done
+        if first:
+            track_outline = _smooth_outline(loc_x, loc_y, OUTLINE_POINTS, OUTLINE_SMOOTH)
+            outline_done = True
         tele_xy[code] = (car_t, xs, ys)
-        # per-lap resample every 10 m
-        tele_laps, ref = _resample_telemetry(code, laps[code], car_t,
-                                        np.array([r["speed"] for r in car], dtype=float),
-                                        np.array([r["throttle"] for r in car], dtype=float),
-                                        np.array([r["brake"] for r in car], dtype=float),
-                                        np.array([r["n_gear"] for r in car], dtype=float),
-                                        np.array([r["drs"] for r in car], dtype=float), xs, ys,
-                                        want_ref=(idx == 0))
+        # per-lap resample every 10 m (.get channels: missing key -> NaN -> interpolated)
+        tele_laps, ref = _resample_telemetry(code, laps.get(code, []), car_t,
+                                        np.array([r.get("speed") for r in car], dtype=float),
+                                        np.array([r.get("throttle") for r in car], dtype=float),
+                                        np.array([r.get("brake") for r in car], dtype=float),
+                                        np.array([r.get("n_gear") for r in car], dtype=float),
+                                        np.array([r.get("drs") for r in car], dtype=float), xs, ys,
+                                        want_ref=first)
         if ref:
             ref_geom = ref
         (odir / "telemetry" / f"{code}.json").write_text(json.dumps(tele_laps), encoding="utf-8")
+        kept_tele.append(code)
+    tele_codes = kept_tele
+    print(f"[pitwall] telemetry drivers kept: {tele_codes}")
 
     xs_o = [p[0] for p in track_outline]
     ys_o = [p[1] for p in track_outline]
     corners, braking_zones = _derive_corners(ref_geom)
-    # merge 1 Hz map positions for telemetry drivers (others: tower only)
-    for code, (lt, lx, ly) in tele_xy.items():
+    # map positions for ALL drivers (not just telemetry): location only,
+    # no car_data needed. Tele drivers already have (car_t, xs, ys) above —
+    # reuse them, fetch location for the rest so the map shows 20 cars.
+    map_xy: dict[str, tuple] = dict(tele_xy)
+    for d in drivers:
+        code = d["code"]
+        if code in map_xy:
+            continue
+        num = num_of[code]
+        try:
+            loc = raw("location", f"driver_number={num}")
+        except RuntimeError as e:
+            print(f"[pitwall] no location for {code}: {e}")
+            continue
+        loc = sorted(
+            (r for r in dated(loc)
+             if r.get("x") is not None and r.get("y") is not None
+             and not (r["x"] == 0 and r["y"] == 0)),
+            key=lambda r: r["date"],
+        )
+        if len(loc) < 2:
+            continue
+        lt = np.array([rel(r["date"]) for r in loc])
+        lx = np.array([r["x"] for r in loc], dtype=float)
+        ly = np.array([r["y"] for r in loc], dtype=float)
+        map_xy[code] = (lt, lx, ly)
+    # merge 1 Hz map positions for every driver with location (tower-only otherwise)
+    for code, (lt, lx, ly) in map_xy.items():
         if code in pos_drivers:
             xi = np.interp(t_axis, lt, lx, left=lx[0], right=lx[-1])
             yi = np.interp(t_axis, lt, ly, left=ly[0], right=ly[-1])
             pos_drivers[code]["x"] = [round(float(v), 1) for v in xi]
             pos_drivers[code]["y"] = [round(float(v), 1) for v in yi]
+    n_map = sum(1 for v in pos_drivers.values() if "x" in v)
+    print(f"[pitwall] map cars: {n_map}/{len(drivers)}")
     track = {
         "outline": track_outline,
         "bounds": [min(xs_o), min(ys_o), max(xs_o), max(ys_o)] if track_outline else [0, 0, 0, 0],
@@ -460,7 +565,7 @@ def main() -> int:
         "intervals": len(iv_raw) > 0,
     }
     meta = {
-        "id": race_id, "name": f"{GP_NAME.get(ses.get('country_name'), ses.get('country_name'))} Grand Prix",
+        "id": race_id, "name": f"{gp_name(ses)} Grand Prix",
         "circuit": ses.get("circuit_short_name") or loc,
         "date": ses["date_start"][:10], "laps": max_lap,
         "sessionKey": sk, "startOffset": 0,
@@ -470,9 +575,20 @@ def main() -> int:
     ctx = {"laps": laps, "drivers": drivers, "pits": pits, "overtakes": overtakes,
            "race_control": race_control, "intervals": intervals, "stints": stints,
            "lapStarts": lap_list}
-    moments = detect_moments(ctx)
+    # analysis must never sink the race: ship files without moments before
+    # shipping nothing (UI empty-states cover both).
+    try:
+        moments = detect_moments(ctx)
+    except Exception as e:  # noqa: BLE001
+        print(f"[pitwall] detect_moments failed, shipping without moments: {e}")
+        moments = []
     ctx["moments"] = moments
-    stats = compute_stats(ctx)
+    try:
+        stats = compute_stats(ctx)
+    except Exception as e:  # noqa: BLE001
+        print(f"[pitwall] compute_stats failed, shipping empty stats: {e}")
+        stats = {"pace": {}, "degradation": {}, "undercut": [], "overtakes": [],
+                 "fastestLap": {}, "sectorBest": {}, "cornerLoss": []}
 
     # ---- write ----
     (odir / "meta.json").write_text(json.dumps(meta), encoding="utf-8")
@@ -522,11 +638,33 @@ def _lap_at_t(lap_starts: list, t: float) -> int:
     return lap
 
 
+def _clean_channel(ch: np.ndarray) -> np.ndarray:
+    """Fill NaN samples by linear interpolation between real neighbours.
+    2026 (active-aero era) ships null channels — e.g. drs is all-null now
+    that DRS is gone. All-NaN -> zeros. Only bridges sub-second gaps
+    between MEASURED samples; never invents a signal."""
+    ch = np.asarray(ch, dtype=float)
+    nans = np.isnan(ch)
+    if not nans.any():
+        return ch
+    good = np.flatnonzero(~nans)
+    if len(good) < 2:
+        return np.zeros_like(ch)
+    ch = ch.copy()
+    ch[nans] = np.interp(np.flatnonzero(nans), good, ch[~nans])
+    return ch
+
+
 def _resample_telemetry(code, laps_of_driver, car_t, speed, throttle, brake, gear, drs, xs, ys,
                         want_ref: bool = False):
     """Per lap, resample channels every 10 m of lap distance (docs/05).
     Returns (tele_laps, ref|None) where ref is the fastest lap's raw geometry
     for corner/braking derivation."""
+    speed = _clean_channel(speed)
+    throttle = _clean_channel(throttle)
+    brake = _clean_channel(brake)
+    gear = _clean_channel(gear)
+    drs = _clean_channel(drs)
     # lap boundaries from laps.json t/time
     bounds = [(r["t"], r["t"] + (r["time"] or 0), r["lap"]) for r in laps_of_driver if r.get("time")]
     by_lap: dict[int, dict] = {}
@@ -571,6 +709,21 @@ def _resample_telemetry(code, laps_of_driver, car_t, speed, throttle, brake, gea
     if want_ref and ranked and ranked[0] in raw_laps:
         ref = raw_laps[ranked[0]]
     return {"lap": {str(lap): by_lap[lap] for lap in sorted(keep) if lap in by_lap}}, ref
+
+
+def _smooth_outline(loc_x, loc_y, target: int, window: int) -> list:
+    """Moving-average x/y then stride to target points.
+    Kills OpenF1 location jitter so the SVG reads as one clean ribbon."""
+    import numpy as _np
+    w = max(1, int(window))
+    if len(loc_x) > w:
+        k = _np.ones(w) / w
+        sx = _np.convolve(_np.asarray(loc_x, dtype=float), k, mode="same")
+        sy = _np.convolve(_np.asarray(loc_y, dtype=float), k, mode="same")
+    else:
+        sx, sy = loc_x, loc_y
+    step = max(1, len(sx) // target)
+    return [[float(x), float(y)] for x, y in zip(sx[::step], sy[::step])]
 
 
 def _derive_corners(ref: dict) -> tuple[list, list]:
@@ -631,7 +784,7 @@ def _update_index(race_id, year, rnd, ses, coverage, moments):
     if idx_path.exists():
         idx = json.loads(idx_path.read_text(encoding="utf-8"))
     stories = [m["headline"] for m in moments if m["type"] in ("overtake", "flag") and m["confidence"] == "high"][:2]
-    cname = GP_NAME.get(ses.get("country_name"), ses.get("country_name"))
+    cname = gp_name(ses)
     entry = {
         "id": race_id, "year": year, "round": rnd,
         "name": f"{cname} Grand Prix",

@@ -14,6 +14,7 @@
     "data:build": "python pipeline/build_race.py",
     "data:quali": "python pipeline/build_quali.py",
     "data:all": "python pipeline/build_all.py",
+    "data:history": "python pipeline/build_history.py",
     "data:check": "python pipeline/check_data.py"
   },
   "dependencies": {

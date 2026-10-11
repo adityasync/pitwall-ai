@@ -8,6 +8,7 @@ import { BATTLE_CLOSE_S_PER_LAP, BATTLE_GAP_S, DRS_GAP_S } from "@/lib/config";
 import { fmtGap } from "@/lib/format";
 import { loadRaceBundle, type RaceBundle } from "@/lib/race";
 import { StateCard } from "@/components/StateCard";
+import { GapChart } from "@/components/GapChart";
 
 export function BattlesClient({ raceId }: { raceId: string }) {
   const { t } = useReplayStore();
@@ -71,14 +72,14 @@ export function BattlesClient({ raceId }: { raceId: string }) {
 
   if (!bundle) {
     return (
-      <main className="mx-auto w-full max-w-5xl px-4 py-10">
+      <main className="mx-auto w-full max-w-5xl px-4 sm:px-6 py-10">
         <StateCard kind="loading" title="Loading battles" text="Reading gaps…" progress={70} />
       </main>
     );
   }
   if (bundle.status !== "ready") {
     return (
-      <main className="mx-auto w-full max-w-5xl px-4 py-10">
+      <main className="mx-auto w-full max-w-5xl px-4 sm:px-6 py-10">
         <StateCard kind="error" title="Could not load this race" text="Build the race files first." />
       </main>
     );
@@ -86,7 +87,7 @@ export function BattlesClient({ raceId }: { raceId: string }) {
 
   const first = battles[0];
   return (
-    <main className="mx-auto w-full max-w-5xl px-4 pb-10 pt-6">
+    <main className="mx-auto w-full max-w-5xl px-4 sm:px-6 pb-12 pt-5">
       <Link href={`/race/${raceId}/easy`} className="touch inline-flex items-center text-sm text-[var(--accent)]">
         ← Back to race
       </Link>
@@ -99,7 +100,7 @@ export function BattlesClient({ raceId }: { raceId: string }) {
         ) : (
           <ul className="grid gap-2 sm:grid-cols-2">
             {battles.slice(0, 8).map((b) => (
-              <li key={b.chaser} className="tnum rounded-md border border-[var(--border)] bg-[var(--panel)] p-4">
+              <li key={b.chaser} className="tnum card p-4">
                 <p className="font-bold">
                   {b.chaser} → {b.target}
                 </p>
@@ -115,6 +116,22 @@ export function BattlesClient({ raceId }: { raceId: string }) {
         )}
       </section>
 
+      {first && bundle.intervals && bundle.meta && (
+        <section aria-label="How the lead battle evolved" className="card mt-6 p-4 sm:p-5">
+          <p className="panel-label mb-2">
+            {first.chaser} vs {first.target} · gap to leader per lap · converges = fight
+          </p>
+          <GapChart
+            intervals={bundle.intervals}
+            lapStarts={bundle.meta.lapStarts}
+            laps={bundle.meta.laps}
+            codes={[first.chaser, first.target]}
+            colours={Object.fromEntries(bundle.drivers.map((d) => [d.code, d.teamColour]))}
+            lap={lap}
+          />
+        </section>
+      )}
+
       {first && (
         <section aria-label="AI battle call" className="mt-4 rounded-md border border-[var(--border-strong)] bg-[var(--panel)] p-4">
           <p className="panel-label mb-1">AI battle call</p>
@@ -126,7 +143,7 @@ export function BattlesClient({ raceId }: { raceId: string }) {
         <p className="panel-label mb-2">Overtakes so far · {overtakes.length} shown</p>
         <ul className="grid gap-2">
           {overtakes.map((m) => (
-            <li key={m.id} className="tnum rounded-md border border-[var(--border)] bg-[var(--panel)] p-3 text-sm">
+            <li key={m.id} className="tnum card p-3 text-sm">
               <span className="text-[var(--muted)]">LAP {m.lap} · </span>
               <strong>{m.drivers[0]}</strong> passed <strong>{m.drivers[1]}</strong> for P{m.headline.match(/P(\d+)/)?.[1] ?? "?"}
               <Link href={`/race/${raceId}/easy?t=${Math.round(m.t)}&m=${m.id}`} className="touch ml-3 text-[var(--accent)]">
@@ -144,7 +161,7 @@ export function BattlesClient({ raceId }: { raceId: string }) {
         <p className="panel-label mb-2">Drive of the day · places gained</p>
         <ul className="tnum grid gap-1 text-sm sm:grid-cols-2">
           {gains.slice(0, 6).map((g) => (
-            <li key={g.code} className="flex gap-2 rounded-md border border-[var(--border)] bg-[var(--panel)] px-3 py-2">
+            <li key={g.code} className="flex gap-2 card px-3 py-2">
               <span className="font-bold">{g.code}</span>
               <span style={{ color: g.delta > 0 ? "var(--good)" : g.delta < 0 ? "var(--bad)" : "var(--muted)" }}>
                 {g.delta > 0 ? `+${g.delta}` : g.delta}

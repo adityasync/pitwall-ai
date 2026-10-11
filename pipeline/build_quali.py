@@ -33,10 +33,17 @@ def main() -> int:
         f"{OPENF1}/sessions?year={args.year}&session_name=Qualifying",
         CACHE_BASE / f"sessions-quali-{args.year}.json",
     )
-    sessions = sorted(sessions, key=lambda s: s["date_start"])
+    sessions = sorted((s for s in sessions if s.get("date_start")), key=lambda s: s["date_start"])
     if args.round < 1 or args.round > len(sessions):
         print(f"[quali] round out of range 1..{len(sessions)}", file=sys.stderr)
         return 2
+    # round-index alarm: sprint weekends must not shift quali<->race alignment
+    try:
+        n_race = len(json.loads((CACHE_BASE / f"sessions-{args.year}.json").read_text(encoding="utf-8")))
+        if n_race != len(sessions):
+            print(f"[quali] WARNING: {len(sessions)} quali vs {n_race} race sessions — round may misalign")
+    except OSError:
+        pass
     ses = sessions[args.round - 1]
     sk = ses["session_key"]
     loc = ses["location"]
@@ -56,6 +63,8 @@ def main() -> int:
     out: dict[str, dict] = {}
     for r in laps:
         if r.get("is_pit_out_lap") or not r.get("lap_duration"):
+            continue
+        if r.get("lap_number") is None or r.get("driver_number") is None:
             continue
         code = acronym.get(r["driver_number"], str(r["driver_number"]))
         out.setdefault(code, []).append({

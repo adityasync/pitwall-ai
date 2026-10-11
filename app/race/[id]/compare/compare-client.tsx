@@ -126,26 +126,26 @@ export function ComparePage({ raceId }: { raceId: string }) {
 
   if (status === "loading") {
     return (
-      <main className="mx-auto w-full max-w-5xl px-4 py-10">
+      <main className="mx-auto w-full max-w-5xl px-4 sm:px-6 py-10">
         <StateCard kind="loading" title="Loading traces" text="Fetching lap telemetry…" progress={70} />
       </main>
     );
   }
   if (status === "error" || !meta) {
     return (
-      <main className="mx-auto w-full max-w-5xl px-4 py-10">
+      <main className="mx-auto w-full max-w-5xl px-4 sm:px-6 py-10">
         <StateCard kind="error" title="Could not load this race" text="Build the race files first." />
       </main>
     );
   }
   if (pair.length < 2) {
     return (
-      <main className="mx-auto w-full max-w-5xl px-4 py-10">
+      <main className="mx-auto w-full max-w-5xl px-4 sm:px-6 py-10">
         <StateCard
           kind="empty"
           title="Telemetry covers only some drivers"
           text={`This replay has traces for ${(meta.coverage.telemetryDrivers ?? []).join(", ") || "no drivers"}. Pick two of them with ?d=A,B.${missing.length > 0 ? ` Missing: ${missing.join(", ")}.` : ""}`}
-          action={<Link href={`/race/${raceId}/easy`} className="touch inline-flex items-center rounded-md bg-[var(--accent)] px-5 font-semibold text-black">Back to race</Link>}
+          action={<Link href={`/race/${raceId}/easy`} className="touch inline-flex items-center rounded-md bg-[var(--accent-deep)] px-5 font-semibold text-white">Back to race</Link>}
         />
       </main>
     );
@@ -162,7 +162,7 @@ export function ComparePage({ raceId }: { raceId: string }) {
   const dPath = delta!.dist.map((d, i) => `${i === 0 ? "M" : "L"}${X(d).toFixed(1)},${Y(delta!.delta[i]).toFixed(1)}`).join(" ");
 
   return (
-    <main className="mx-auto w-full max-w-5xl px-4 pb-10 pt-6">
+    <main className="mx-auto w-full max-w-5xl px-4 sm:px-6 pb-12 pt-5">
       <Link href={`/race/${raceId}/easy`} className="touch inline-flex items-center text-sm text-[var(--accent)]">
         ← Back to race
       </Link>
@@ -186,7 +186,7 @@ export function ComparePage({ raceId }: { raceId: string }) {
         ))}
       </div>
 
-      <section aria-label="Speed traces" className="mt-4 rounded-md border border-[var(--border)] bg-[var(--panel)] p-3">
+      <section aria-label="Speed traces" className="mt-4 card p-3">
         <p className="panel-label mb-1">Speed · throttle · brake on/off · gear — by distance</p>
         <div className="tnum mb-1 flex gap-4 text-xs">
           {traces.map((tr) => (
@@ -196,7 +196,7 @@ export function ComparePage({ raceId }: { raceId: string }) {
         <TraceChart laps={traces} cursor={cursor} onCursor={setCursor} />
       </section>
 
-      <section aria-label="Time delta" className="mt-3 rounded-md border border-[var(--border)] bg-[var(--panel)] p-3">
+      <section aria-label="Time delta" className="mt-3 card p-3">
         <p className="panel-label mb-1">Time delta ({b} ahead when below zero) · seconds</p>
         <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: 120 }} role="img" aria-label="Cumulative time delta">
           <line x1={PADL} x2={W - 8} y1={H / 2} y2={H / 2} stroke="var(--border-strong)" strokeWidth={1} />
@@ -206,15 +206,15 @@ export function ComparePage({ raceId }: { raceId: string }) {
 
       {cursor != null && atCursor && (
         <section aria-label="At the cursor" className="tnum mt-3 grid grid-cols-3 gap-2 text-center text-sm">
-          <div className="rounded-md border border-[var(--border)] bg-[var(--panel)] p-3">
+          <div className="card p-3">
             <p className="text-[var(--muted)]">{a}</p>
             <p className="text-lg font-bold">{Math.round(atCursor.a.speed)} km/h · gear {atCursor.a.gear} · brake {atCursor.a.brake ? "ON" : "OFF"}</p>
           </div>
-          <div className="rounded-md border border-[var(--border)] bg-[var(--panel)] p-3">
+          <div className="card p-3">
             <p className="text-[var(--muted)]">{b}</p>
             <p className="text-lg font-bold">{Math.round(atCursor.b.speed)} km/h · gear {atCursor.b.gear} · brake {atCursor.b.brake ? "ON" : "OFF"}</p>
           </div>
-          <div className="rounded-md border border-[var(--border)] bg-[var(--panel)] p-3">
+          <div className="card p-3">
             <p className="text-[var(--muted)]">DELTA · {Math.round(cursor).toLocaleString()} m</p>
             <p className="text-lg font-bold">{atCursor.d != null ? `${atCursor.d >= 0 ? "+" : ""}${atCursor.d.toFixed(2)} s` : "—"}</p>
           </div>
@@ -233,7 +233,7 @@ export function ComparePage({ raceId }: { raceId: string }) {
       )}
 
       {track && track.brakingZones.length > 0 && (
-        <section aria-label="Braking zones on this lap" className="mt-3 rounded-md border border-[var(--border)] bg-[var(--panel)] p-4">
+        <section aria-label="Braking zones on this lap" className="mt-3 card p-4">
           <p className="panel-label mb-2">Braking zones on this lap · DERIVED</p>
           <ul className="tnum grid gap-1 text-sm sm:grid-cols-2">
             {track.brakingZones.map((z, i) => (

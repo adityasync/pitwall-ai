@@ -63,14 +63,14 @@ export function RadioClient({ raceId }: { raceId: string }) {
 
   if (status === "loading") {
     return (
-      <main className="mx-auto w-full max-w-5xl px-4 py-10">
+      <main className="mx-auto w-full max-w-5xl px-4 sm:px-6 py-10">
         <StateCard kind="loading" title="Loading radio" text="Tuning in…" progress={60} />
       </main>
     );
   }
   if (status === "error") {
     return (
-      <main className="mx-auto w-full max-w-5xl px-4 py-10">
+      <main className="mx-auto w-full max-w-5xl px-4 sm:px-6 py-10">
         <StateCard kind="error" title="Could not load this race" text="Build the race files first." />
       </main>
     );
@@ -80,7 +80,7 @@ export function RadioClient({ raceId }: { raceId: string }) {
   const drivers = [...new Set(clips.map((c) => c.driver))].sort();
 
   return (
-    <main className="mx-auto w-full max-w-5xl px-4 pb-10 pt-6">
+    <main className="mx-auto w-full max-w-5xl px-4 sm:px-6 pb-12 pt-5">
       <Link href={`/race/${raceId}/easy`} className="touch inline-flex items-center text-sm text-[var(--accent)]">
         ← Back to race
       </Link>
@@ -97,7 +97,7 @@ export function RadioClient({ raceId }: { raceId: string }) {
             title="No radio for this race"
             text="The feed released no team radio for this replay. Try São Paulo 2024 — it has 60+ clips."
             action={
-              <Link href="/races" className="touch inline-flex items-center rounded-md bg-[var(--accent)] px-5 font-semibold text-black">
+              <Link href="/races" className="touch inline-flex items-center rounded-md bg-[var(--accent-deep)] px-5 font-semibold text-white">
                 Pick another race
               </Link>
             }
@@ -118,7 +118,7 @@ export function RadioClient({ raceId }: { raceId: string }) {
             </div>
             <ul className="grid gap-2">
               {shown.map((c, i) => (
-                <li key={`${c.t}-${i}`} className="rounded-md border border-[var(--border)] bg-[var(--panel)] p-3">
+                <li key={`${c.t}-${i}`} className="card p-3">
                   <p className="tnum text-xs text-[var(--muted)]">
                     {c.driver} · LAP {c.lap}
                     {playing === i ? " · NOW PLAYING" : ""}
@@ -155,7 +155,7 @@ export function RadioClient({ raceId }: { raceId: string }) {
         </div>
         <ul className="mt-2 grid gap-1.5">
           {rc.filter((m) => (m.message ?? m.flag ?? m.category) && !/chequered/i.test(`${m.flag} ${m.message}`)).slice(0, 60).map((m, i) => (
-            <li key={i} className="tnum rounded-md border border-[var(--border)] bg-[var(--panel)] px-3 py-2 text-sm">
+            <li key={i} className="tnum card px-3 py-2 text-sm">
               <span className="text-[var(--muted)]">LAP {m.lap ?? "—"} · </span>
               <strong>{m.flag || m.category || "NOTE"}</strong>
               <span className="block text-[var(--muted)]">{plain ? plainEnglish(m) : (m.message ?? "")}</span>

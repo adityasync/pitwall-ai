@@ -30,6 +30,7 @@ of ~10 s; the app works without it.
 pnpm data:build 2025 18   # one race (year, round) -> public/data/<race-id>/
 pnpm data:quali 2024 21   # qualifying laps for a built race
 pnpm data:all             # featured races (see pipeline/build_all.py)
+pnpm data:history         # Ergast CSVs (data/*.csv) -> public/data/history/
 pnpm data:check           # size budgets: <8 MB/race gz, <400 KB Easy-first
 ```
 

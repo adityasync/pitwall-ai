@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { fmtGap } from "@/lib/format";
 
 export const TYRE_STYLE: Record<string, { bg: string; fg: string; letter: string }> = {
@@ -55,10 +56,15 @@ export function TimingRow({
   trend,
   onSelect,
   selected,
+  sectors,
+  status,
+  dense,
+  flash,
 }: {
   pos: number;
   teamColour: string;
   code: string;
+  /** main interval readout (gap ahead, or LEADER) */
   gap: string | null;
   tyre: string | null;
   age: number | null;
@@ -66,16 +72,40 @@ export function TimingRow({
   trend: number | null;
   onSelect?: () => void;
   selected?: boolean;
+  /** last-lap sector mini-cells (xl screens only) */
+  sectors?: ReactNode;
+  /** PIT when in the pit lane, DRS when within 1 s of the car ahead */
+  status?: "PIT" | "DRS" | null;
+  /** compact rows for the mission-control rail */
+  dense?: boolean;
+  /** position changed since last render — flash, no remount */
+  flash?: boolean;
 }) {
   const inner = (
     <>
-      <span className="h-8 w-1 flex-none rounded" style={{ background: teamColour }} aria-hidden />
-      <span className="tnum w-7 flex-none text-[var(--muted)]">{pos}</span>
-      <span className="tnum w-12 flex-none font-bold">{code}</span>
-      <span className="tnum flex-1 text-sm text-[var(--muted)]">{gap ?? fmtGap(null)}</span>
+      <span className="h-9 w-1.5 flex-none rounded-full" style={{ background: teamColour }} aria-hidden />
+      <span className="tnum w-7 flex-none text-sm font-bold text-[var(--muted)]">{pos}</span>
+      <span className="tnum w-12 flex-none text-[15px] font-bold tracking-wide">{code}</span>
+      <span className="tnum min-w-16 flex-none text-sm text-[var(--muted)]" title="Interval to the car ahead (MEASURED)">
+        {gap ?? fmtGap(null)}
+      </span>
+      {status && (
+        <span
+          className="tnum shrink-0 rounded border px-1 text-[10px] font-bold tracking-widest"
+          style={
+            status === "PIT"
+              ? { color: "var(--warn)", borderColor: "var(--warn)" }
+              : { color: "var(--accent)", borderColor: "var(--accent)" }
+          }
+        >
+          {status}
+        </span>
+      )}
+      <span className="tnum min-w-0 flex-1" />
+      {sectors}
       {trend != null && trend !== 0 && (
         <span
-          className="tnum text-xs font-bold"
+          className="tnum shrink-0 text-xs font-bold"
           style={{ color: trend > 0 ? "var(--good)" : "var(--bad)" }}
           aria-label={`${trend > 0 ? "gained" : "lost"} ${Math.abs(trend)} positions`}
         >
@@ -87,21 +117,25 @@ export function TimingRow({
   );
   if (!onSelect) {
     return (
-      <li className="flex items-center gap-2.5 border-b border-[var(--border)] bg-[var(--panel)] px-3 py-2 last:border-0 sm:gap-3">
+      <li className="flex items-center gap-3 border-b border-[var(--border)] bg-[var(--panel)] px-4 py-2.5 transition-colors last:border-0 hover:bg-[var(--raised)]/60">
         {inner}
       </li>
     );
   }
   return (
     <li
-      className="border-b border-[var(--border)] bg-[var(--panel)] last:border-0"
-      style={selected ? { outline: "2px solid var(--accent)", outlineOffset: "-2px" } : undefined}
+      className={`border-b border-[var(--border)] last:border-0 ${flash ? "flash" : ""}`}
+      style={
+        selected
+          ? { background: "var(--accent-dim)", boxShadow: "inset 3px 0 0 0 var(--accent-deep)" }
+          : undefined
+      }
     >
       <button
         onClick={onSelect}
         aria-pressed={selected}
         aria-label={`Select ${code}, position ${pos}`}
-        className="flex w-full items-center gap-2.5 px-3 py-2 text-left sm:gap-3"
+        className={`flex w-full items-center gap-2.5 px-3 text-left hover:bg-[var(--raised)]/60 ${dense ? "py-1.5" : "py-2.5"}`}
       >
         {inner}
       </button>

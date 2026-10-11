@@ -1,12 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 32" role="img" aria-labelledby="pw-logo-title">
-  <title id="pw-logo-title">PITWALL.AI — Watch the race. Understand the race.</title>
-  <!-- mark: Concept C, telemetry trace with tapped moment -->
-  <rect x="0.5" y="0.5" width="31" height="31" rx="7" fill="#111113" stroke="#27272a"/>
-  <rect x="6" y="12" width="20" height="1" fill="#27272A"/>
-  <rect x="6" y="22" width="20" height="1" fill="#27272A"/>
-  <path d="M7 19 H12 L15 12 H18 L21 22 H25" fill="none" stroke="#2DE2E6" stroke-width="2.5" stroke-linecap="square" stroke-linejoin="bevel"/>
-  <circle cx="21" cy="22" r="4.5" fill="#111113" stroke="#2DE2E6" stroke-width="1.5"/>
-  <circle cx="21" cy="22" r="1.8" fill="#E4E4E7"/>
-  <!-- wordmark: Barlow Condensed 700, fallback Arial Narrow -->
-  <text x="40" y="22.5" font-family="'Barlow Condensed','Arial Narrow',sans-serif" font-weight="700" font-size="20" letter-spacing="1.5" fill="#E4E4E7">PITWALL<tspan fill="#2DE2E6">.AI</tspan></text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 48" role="img" aria-labelledby="pw-logo-title">
+  <title id="pw-logo-title">pitwall.ai</title>
+  <rect x="14" y="10" width="7" height="28" rx="2" fill="#FFFFFF"/>
+  <rect x="27" y="16" width="7" height="22" rx="2" fill="#2DE2E6"/>
+  <text x="46" y="34" font-family="'Space Grotesk','Arial',sans-serif" font-weight="700" font-size="30" letter-spacing="0" fill="#FFFFFF">pitwall<tspan fill="#2DE2E6">.ai</tspan></text>
 </svg>

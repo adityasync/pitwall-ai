@@ -40,14 +40,14 @@ export function RecapClient({ raceId }: { raceId: string }) {
 
   if (status === "loading") {
     return (
-      <main className="mx-auto w-full max-w-5xl px-4 py-10">
+      <main className="mx-auto w-full max-w-5xl px-4 sm:px-6 py-10">
         <StateCard kind="loading" title="Loading recap" text="Reading results…" progress={70} />
       </main>
     );
   }
   if (status === "error") {
     return (
-      <main className="mx-auto w-full max-w-5xl px-4 py-10">
+      <main className="mx-auto w-full max-w-5xl px-4 sm:px-6 py-10">
         <StateCard kind="error" title="Could not load this race" text="Build the race files first." />
       </main>
     );
@@ -61,7 +61,7 @@ export function RecapClient({ raceId }: { raceId: string }) {
   const og = `/api/og?race=${raceId}`;
 
   return (
-    <main className="mx-auto w-full max-w-5xl px-4 pb-10 pt-6">
+    <main className="mx-auto w-full max-w-5xl px-4 sm:px-6 pb-12 pt-5">
       <p className="panel-label">Race finished</p>
       <h1 className="display mt-1 text-4xl font-bold sm:text-5xl">{name} — recap</h1>
 
@@ -82,7 +82,7 @@ export function RecapClient({ raceId }: { raceId: string }) {
         <h2 className="display text-3xl font-bold">Three moments that mattered</h2>
         <ol className="mt-3 grid gap-2">
           {top3.map((m, i) => (
-            <li key={m.id} className="rounded-md border border-[var(--border)] bg-[var(--panel)] p-4">
+            <li key={m.id} className="card p-4">
               <p className="tnum text-xs text-[var(--muted)]">{i + 1} · LAP {m.lap} · {m.type.toUpperCase()}</p>
               <p className="mt-1 font-semibold">{m.headline}</p>
               <Link href={`/race/${raceId}/easy?t=${Math.round(m.t)}&m=${m.id}`} className="touch mt-1 inline-flex text-sm font-semibold text-[var(--accent)]">
@@ -94,15 +94,15 @@ export function RecapClient({ raceId }: { raceId: string }) {
       </section>
 
       <section aria-label="By the numbers" className="tnum mt-8 grid grid-cols-3 gap-2 text-center">
-        <div className="rounded-md border border-[var(--border)] bg-[var(--panel)] p-4">
+        <div className="card p-4">
           <p className="text-[11px] tracking-widest text-[var(--muted)]">OVERTAKES</p>
           <p className="text-2xl font-bold">{stats?.overtakes.length ?? "—"}</p>
         </div>
-        <div className="rounded-md border border-[var(--border)] bg-[var(--panel)] p-4">
+        <div className="card p-4">
           <p className="text-[11px] tracking-widest text-[var(--muted)]">PIT STOPS</p>
           <p className="text-2xl font-bold">{moments.filter((m) => m.type === "pit").length}</p>
         </div>
-        <div className="rounded-md border border-[var(--border)] bg-[var(--panel)] p-4">
+        <div className="card p-4">
           <p className="text-[11px] tracking-widest text-[var(--muted)]">FASTEST LAP</p>
           <p className="text-2xl font-bold">{(stats?.fastestLap as { driver?: string })?.driver ?? "—"}</p>
         </div>
@@ -114,7 +114,7 @@ export function RecapClient({ raceId }: { raceId: string }) {
         <img src={og} alt={`${name} recap card`} className="mt-3 w-full max-w-xl rounded-md border border-[var(--border)]" />
         <div className="mt-3 flex flex-wrap gap-2">
           <a href={`https://wa.me/?text=${encodeURIComponent(shareText)}`} target="_blank" rel="noreferrer"
-            className="touch inline-flex items-center rounded-md bg-[var(--accent)] px-5 text-sm font-bold text-black">
+            className="touch inline-flex items-center rounded-md bg-[var(--accent-deep)] px-5 text-sm font-bold text-white">
             Share on WhatsApp
           </a>
           <a href={og} download={`${raceId}-recap.png`}

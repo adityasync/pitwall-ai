@@ -9,6 +9,8 @@ import { loadRaceBundle, type RaceBundle } from "@/lib/race";
 import type { LapRow } from "@/lib/types";
 import { loadJson } from "@/lib/data";
 import { StateCard } from "@/components/StateCard";
+import { StintBars } from "@/components/StintBars";
+import { PitTable } from "@/components/PitTable";
 
 
 export function StrategyClient({ raceId }: { raceId: string }) {
@@ -19,6 +21,7 @@ export function StrategyClient({ raceId }: { raceId: string }) {
   const [tyre, setTyre] = useState<string>("MEDIUM");
   const [pitLoss, setPitLoss] = useState<number>(22);
   const [stationary, setStationary] = useState<number>(2.4);
+  const [pits, setPits] = useState<{ driver: string; lap: number; duration: number | null; stationary: number | null }[]>([]);
 
   useEffect(() => {
     let live = true;
@@ -30,8 +33,10 @@ export function StrategyClient({ raceId }: { raceId: string }) {
         const top = [...b.drivers].sort((a, c) => (a.finish ?? 99) - (c.finish ?? 99))[0];
         setDriver(top?.code ?? "");
         setPitLap(lapAtT(b.meta.lapStarts, 0) + 5);
-        const losses = (await loadJson<{ duration: number | null }[]>(`${raceId}/pits.json`)).data
-          ?.map((p) => p.duration)
+        const rows = (await loadJson<{ driver: string; lap: number; duration: number | null; stationary: number | null }[]>(`${raceId}/pits.json`)).data ?? [];
+        setPits(rows);
+        const losses = rows
+          .map((p) => p.duration)
           .filter((d): d is number => d != null) ?? [];
         if (losses.length > 0) {
           losses.sort((a, b2) => a - b2);
@@ -110,14 +115,14 @@ export function StrategyClient({ raceId }: { raceId: string }) {
 
   if (!bundle) {
     return (
-      <main className="mx-auto w-full max-w-5xl px-4 py-10">
+      <main className="mx-auto w-full max-w-5xl px-4 sm:px-6 py-10">
         <StateCard kind="loading" title="Loading strategy" text="Reading stints…" progress={70} />
       </main>
     );
   }
   if (bundle.status !== "ready" || !bundle.meta) {
     return (
-      <main className="mx-auto w-full max-w-5xl px-4 py-10">
+      <main className="mx-auto w-full max-w-5xl px-4 sm:px-6 py-10">
         <StateCard kind="error" title="Could not load this race" text="Build the race files first." />
       </main>
     );
@@ -125,17 +130,33 @@ export function StrategyClient({ raceId }: { raceId: string }) {
 
   const lap = lapAtT(bundle.meta.lapStarts, t);
   const laps = bundle.meta.laps;
+  const finishOrder = [...bundle.drivers].sort((a, c) => (a.finish ?? 99) - (c.finish ?? 99)).map((d) => d.code);
+  const colours = Object.fromEntries(bundle.drivers.map((d) => [d.code, d.teamColour]));
 
   return (
-    <main className="mx-auto w-full max-w-5xl px-4 pb-10 pt-6">
+    <main className="mx-auto w-full max-w-5xl px-4 sm:px-6 pb-12 pt-5">
       <Link href={`/race/${raceId}/easy`} className="touch inline-flex items-center text-sm text-[var(--accent)]">
         ← Back to race
       </Link>
-      <h1 className="display mt-2 text-4xl font-bold">Strategy simulator</h1>
-      <p className="tnum text-xs text-[var(--muted)]">WHAT IF… · LAP {lap}</p>
+      <h1 className="display mt-2 text-4xl font-bold">Strategy</h1>
+      <p className="tnum text-xs text-[var(--muted)]">STINTS + STOPS · THEN WHAT IF… · LAP {lap}</p>
+
+      <section aria-label="What actually happened" className="mt-6">
+        <p className="panel-label mb-2">What actually happened · stints + stops MEASURED</p>
+        <div className="card p-4 sm:p-5">
+          <StintBars stints={bundle.stints} order={finishOrder} colours={colours} laps={laps} />
+        </div>
+        <div className="card mt-4 p-4 sm:p-5">
+          <p className="panel-label mb-2">Every pit stop</p>
+          <PitTable pits={pits} colours={colours} />
+        </div>
+      </section>
+
+      <section aria-label="Strategy simulator" className="mt-8">
+        <p className="panel-label mb-2">What if… · simulator ESTIMATE</p>
 
       <div className="mt-4 grid gap-4 md:grid-cols-2">
-        <section aria-label="Inputs" className="rounded-md border border-[var(--border)] bg-[var(--panel)] p-4">
+        <section aria-label="Inputs" className="card p-4">
           <p className="panel-label mb-2">Driver</p>
           <div className="flex flex-wrap gap-1.5">
             {bundle.drivers.slice(0, 10).map((d) => (
@@ -190,6 +211,7 @@ export function StrategyClient({ raceId }: { raceId: string }) {
           )}
         </section>
       </div>
+      </section>
 
       <section aria-label="Compare the options" className="mt-4">
         <p className="panel-label mb-2">Compare the options</p>
@@ -223,7 +245,7 @@ export function StrategyClient({ raceId }: { raceId: string }) {
         <p className="panel-label mb-2">Undercut threat</p>
         <ul className="tnum grid gap-1 text-sm sm:grid-cols-2">
           {threats.map((x) => (
-            <li key={x.code} className="flex gap-2 rounded-md border border-[var(--border)] bg-[var(--panel)] px-3 py-2">
+            <li key={x.code} className="flex gap-2 card px-3 py-2">
               <span className="font-bold">{x.code}</span>
               <span className="text-[var(--warn)]">{x.pct}%</span>
               <span className="text-[var(--muted)]">{x.gap.toFixed(1)} s behind</span>

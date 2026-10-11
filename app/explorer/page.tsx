@@ -37,7 +37,7 @@ export default function ExplorerPage() {
   const selected = races.find((r) => r.id === sel);
 
   return (
-    <main className="mx-auto w-full max-w-5xl px-4 pb-10 pt-6">
+    <main className="mx-auto w-full max-w-5xl px-4 sm:px-6 pb-12 pt-5">
       <p className="panel-label">Session explorer</p>
       <h1 className="display mt-1 text-4xl font-bold">Every replay, and what data it has</h1>
       <input
@@ -99,7 +99,7 @@ export default function ExplorerPage() {
                 ))}
               </ul>
               <div className="mt-4 flex flex-wrap gap-2">
-                <Link href={`/race/${selected.id}/easy`} className="touch inline-flex items-center rounded-md bg-[var(--accent)] px-4 text-sm font-bold text-black">Open in Easy mode</Link>
+                <Link href={`/race/${selected.id}/easy`} className="touch inline-flex items-center rounded-md bg-[var(--accent-deep)] px-4 text-sm font-bold text-white">Open in Easy mode</Link>
                 <Link href={`/race/${selected.id}/pro`} className="touch inline-flex items-center rounded-md border border-[var(--border-strong)] px-4 text-sm font-semibold">Pro</Link>
                 <Link href={`/race/${selected.id}/compare`} className="touch inline-flex items-center rounded-md border border-[var(--border-strong)] px-4 text-sm font-semibold">Telemetry lab</Link>
               </div>

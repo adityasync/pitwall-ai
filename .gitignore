@@ -40,6 +40,8 @@ yarn-error.log*
 # pipeline raw cache (gitignored per docs/04-DATA-SOURCES.md)
 pipeline/cache/
 /pipeline/.venv/
+# batch run logs — local noise, never commit
+pipeline/*.log
 
 # vercel
 .vercel

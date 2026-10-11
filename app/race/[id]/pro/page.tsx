@@ -18,7 +18,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   return (
     <Suspense
       fallback={
-        <main className="mx-auto w-full max-w-[1360px] px-4 py-10">
+        <main className="mx-auto w-full max-w-[1280px] px-4 sm:px-6 py-10">
           <StateCard kind="loading" title="Loading workstation" text={`Fetching race…`} progress={70} />
         </main>
       }

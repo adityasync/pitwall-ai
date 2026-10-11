@@ -1,7 +1,7 @@
 "use client";
 
+import * as React from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useUiStore } from "@/stores/uiStore";
 import { useReplayStore } from "@/stores/replayStore";
@@ -12,17 +12,17 @@ export function ModeToggle() {
     <div
       role="group"
       aria-label="Mode"
-      className="flex overflow-hidden rounded-md border border-[var(--border-strong)]"
+      className="flex shrink-0 items-center rounded-full border border-white/10 bg-white/[0.04] p-1 backdrop-blur-md"
     >
       {(["easy", "pro"] as const).map((m) => (
         <button
           key={m}
           onClick={() => set({ mode: m })}
           aria-pressed={mode === m}
-          className={`touch px-4 text-sm font-semibold tracking-wide uppercase ${
+          className={`touch rounded-full px-4 text-[12px] font-bold tracking-[0.14em] uppercase transition-all duration-300 ${
             mode === m
-              ? "bg-[var(--accent)] text-black"
-              : "text-[var(--muted)]"
+              ? "bg-white text-black shadow-[0_2px_14px_rgba(255,255,255,0.3)]"
+              : "text-[var(--muted)] hover:text-[var(--text)]"
           }`}
         >
           {m}
@@ -39,7 +39,7 @@ export function LangToggle() {
     <div
       role="group"
       aria-label="Language"
-      className="flex overflow-hidden rounded-md border border-[var(--border-strong)]"
+      className="flex shrink-0 items-center rounded-full border border-white/10 bg-white/[0.04] p-1 backdrop-blur-md"
     >
       {(
         [
@@ -51,10 +51,10 @@ export function LangToggle() {
           key={v}
           onClick={() => set({ lang: v })}
           aria-pressed={lang === v}
-          className={`touch px-3 text-sm font-semibold ${
+          className={`touch rounded-full px-3 text-[12px] font-bold tracking-wide transition-all duration-300 ${
             lang === v
-              ? "bg-[var(--raised)] text-[var(--text)]"
-              : "text-[var(--muted)]"
+              ? "bg-[var(--accent-deep)] text-white shadow-[0_2px_16px_rgba(225,6,0,0.6)]"
+              : "text-[var(--muted)] hover:text-[var(--text)]"
           }`}
         >
           {label}
@@ -70,48 +70,44 @@ export function ReplayBadge() {
   const raceId = useReplayStore((s) => s.raceId);
   if (!raceId) {
     return (
-      <span className="tnum inline-flex min-h-[44px] items-center rounded-md border border-[var(--border)] px-3 text-xs font-semibold tracking-widest text-[var(--muted)]">
+      <span className="tnum inline-flex min-h-[44px] shrink-0 items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 text-[11px] font-bold tracking-[0.18em] text-[var(--muted)] backdrop-blur-md">
+        <span aria-hidden className="inline-block h-1.5 w-1.5 rounded-full bg-[var(--faint)]" />
         REPLAY DATA
       </span>
     );
   }
   return (
-    <span className="tnum inline-flex min-h-[44px] items-center rounded-md border border-[var(--border-strong)] px-3 text-xs font-semibold tracking-widest text-[var(--accent)]">
+    <span className="tnum inline-flex min-h-[44px] shrink-0 items-center gap-2 rounded-full border border-[rgba(225,6,0,0.45)] bg-[rgba(225,6,0,0.12)] px-4 text-[11px] font-bold tracking-[0.18em] text-white backdrop-blur-md shadow-[0_0_24px_-4px_rgba(225,6,0,0.6)]">
+      <span aria-hidden className="live-dot inline-block h-1.5 w-1.5 rounded-full bg-[#ff2b2b]" />
       REPLAY · LAP {lap}
     </span>
   );
 }
 
-const NAV: { group: string; links: { href: string; label: string }[] }[] = [
-  {
-    group: "WATCH",
-    links: [
-      { href: "/races", label: "Races" },
-      { href: "/follow", label: "Follow" },
-    ],
-  },
-  {
-    group: "ANALYSE",
-    links: [
-      { href: "/ask", label: "Ask" },
-      { href: "/telemetry", label: "Telemetry" },
-    ],
-  },
-  {
-    group: "PEOPLE",
-    links: [
-      { href: "/standings", label: "Standings" },
-      { href: "/season", label: "Season" },
-    ],
-  },
-  {
-    group: "MORE",
-    links: [
-      { href: "/explorer", label: "Explorer" },
-      { href: "/export", label: "Export" },
-      { href: "/methods", label: "Methods" },
-    ],
-  },
+const PRIMARY: { href: string; label: string; live?: boolean }[] = [
+  { href: "/races", label: "Races" },
+  { href: "/live", label: "Live", live: true },
+  { href: "/ask", label: "Ask" },
+  { href: "/telemetry", label: "Telemetry" },
+  { href: "/standings", label: "Standings" },
+];
+
+const OVERFLOW: { href: string; label: string; desc: string }[] = [
+  { href: "/follow", label: "Follow", desc: "Your drivers" },
+  { href: "/season", label: "Season", desc: "Title fight + calendar" },
+  { href: "/drivers", label: "Drivers", desc: "865 careers" },
+  { href: "/teams", label: "Teams", desc: "Constructors" },
+  { href: "/circuits", label: "Circuits", desc: "78 tracks" },
+  { href: "/explorer", label: "Explorer", desc: "Search everything" },
+  { href: "/export", label: "Export", desc: "CSV + PNG" },
+  { href: "/methods", label: "Methods", desc: "How we stay honest" },
+];
+
+const SHEET_GROUPS: { title: string; links: { href: string; label: string }[] }[] = [
+  { title: "Watch", links: [{ href: "/races", label: "Races" }, { href: "/live", label: "Live β" }, { href: "/follow", label: "Follow" }] },
+  { title: "Analyse", links: [{ href: "/ask", label: "Ask" }, { href: "/telemetry", label: "Telemetry" }, { href: "/explorer", label: "Explorer" }, { href: "/export", label: "Export" }] },
+  { title: "Sport", links: [{ href: "/standings", label: "Standings" }, { href: "/season", label: "Season" }, { href: "/drivers", label: "Drivers" }, { href: "/teams", label: "Teams" }, { href: "/circuits", label: "Circuits" }] },
+  { title: "Project", links: [{ href: "/methods", label: "Methods" }] },
 ];
 
 export function TopBar() {
@@ -119,58 +115,219 @@ export function TopBar() {
   const pathname = usePathname() ?? "";
   const isActive = (href: string) =>
     pathname === href || pathname.startsWith(`${href}/`);
+  const overflowActive = OVERFLOW.some((l) => isActive(l.href));
+
   return (
-    <header className="sticky top-0 z-50 border-b border-[var(--border)] bg-[var(--bar)]">
-      <div className="mx-auto w-full max-w-[1360px] px-4 pt-2">
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-          <Link href="/" className="flex min-h-[44px] items-center gap-2" aria-label="PITWALL.AI — home">
-            <Image src="/logo.svg" alt="" width={176} height={32} className="h-8 w-auto" priority />
-            <span className="sr-only">PITWALL.AI</span>
-          </Link>
+    <header className="sticky top-0 z-50 border-b border-white/[0.07] bg-[#07070a]/78 backdrop-blur-2xl backdrop-saturate-150">
+      <div className="mx-auto flex h-16 w-full max-w-[1440px] items-center gap-2 px-4 sm:gap-3 sm:px-6">
+        <Link href="/" className="display group flex shrink-0 items-center gap-2.5 text-xl font-bold tracking-tight" aria-label="Pitwall.ai home">
+          <span className="relative grid h-8 w-8 place-items-center overflow-hidden rounded-[9px] bg-gradient-to-b from-[#ff2b2b] to-[#9d0400] shadow-[0_4px_20px_-2px_rgba(225,6,0,0.7)]">
+            <span className="display text-[15px] font-bold italic text-white">P</span>
+            <span className="absolute inset-x-2 bottom-1 h-px bg-white/60" aria-hidden />
+          </span>
+          <span className="hidden italic sm:inline">pitwall<span className="text-[var(--accent)]">.ai</span></span>
+        </Link>
+
+        {/* desktop primary nav — 5 items, no shouting group labels */}
+        <nav aria-label="Primary" className="ml-2 hidden items-center gap-0.5 lg:flex">
+          {PRIMARY.map((l) => {
+            const active = isActive(l.href);
+            return (
+              <Link
+                key={l.href}
+                href={l.href}
+                aria-current={active ? "page" : undefined}
+                className={`touch relative inline-flex items-center gap-1.5 rounded-full px-3.5 text-[13.5px] font-semibold tracking-wide transition-all duration-200 ${
+                  active ? "text-white" : "text-[var(--muted)] hover:text-white"
+                }`}
+              >
+                {l.live && (
+                  <span aria-hidden className={`h-1.5 w-1.5 rounded-full ${active ? "bg-[#ff2b2b]" : "bg-[var(--faint)]"}`} />
+                )}
+                {l.label}
+                {l.live && (
+                  <span className="tnum rounded-full border border-[rgba(225,6,0,0.5)] bg-[rgba(225,6,0,0.14)] px-1.5 py-px text-[9px] font-bold tracking-widest text-[#ff7a7a]">
+                    β
+                  </span>
+                )}
+                <span
+                  aria-hidden
+                  className={`absolute inset-x-3.5 -bottom-[13px] h-[2px] rounded-full bg-gradient-to-r from-[#ff2b2b] to-[#ff7a5c] transition-all duration-300 ${
+                    active ? "opacity-100 scale-x-100" : "opacity-0 scale-x-50"
+                  }`}
+                />
+              </Link>
+            );
+          })}
+          <OverflowMenu active={overflowActive} isActive={isActive} />
+        </nav>
+
+        <div className="ml-auto flex min-w-0 items-center gap-1.5 sm:gap-2">
           <button
             onClick={() => openPalette({ palette: true })}
-            className="touch hidden items-center gap-2 rounded-md border border-[var(--border-strong)] px-3 text-sm text-[var(--muted)] md:inline-flex"
-            aria-label="Open command palette"
+            className="touch inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-[var(--muted)] backdrop-blur-md transition hover:border-white/20 hover:text-white"
+            aria-label="Search or run a command (Ctrl K)"
+            title="Search (Ctrl K)"
           >
-            Search or run a command…
-            <span className="tnum rounded bg-[var(--raised)] px-1.5 text-[11px]">Ctrl K</span>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
+              <circle cx="7" cy="7" r="4.5" stroke="currentColor" strokeWidth="1.6" />
+              <line x1="10.8" y1="10.8" x2="14" y2="14" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+            </svg>
           </button>
-          <div className="ml-auto flex flex-wrap items-center gap-2">
-            <ReplayBadge />
-            <ModeToggle />
-            <LangToggle />
+          <span className="hidden md:inline-flex"><ReplayBadge /></span>
+          <ModeToggle />
+          <span className="hidden sm:inline-flex"><LangToggle /></span>
+          <MobileMenu isActive={isActive} />
+        </div>
+      </div>
+      <div aria-hidden className="h-px bg-gradient-to-r from-transparent via-[var(--accent-deep)]/70 to-transparent" />
+    </header>
+  );
+}
+
+function OverflowMenu({ active, isActive }: { active: boolean; isActive: (h: string) => boolean }) {
+  const [open, setOpen] = React.useState(false);
+  const ref = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    if (!open) return;
+    const onDoc = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("mousedown", onDoc);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDoc);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open ]);
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        onClick={() => setOpen((o) => !o)}
+        aria-expanded={open}
+        aria-haspopup="menu"
+        className={`touch inline-flex items-center gap-1 rounded-full px-3.5 text-[13.5px] font-semibold tracking-wide transition ${
+          active || open ? "text-white" : "text-[var(--muted)] hover:text-white"
+        }`}
+      >
+        More
+        <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden className={`transition-transform duration-300 ${open ? "rotate-180" : ""}`}>
+          <path d="M2 3.5 5 6.5 8 3.5" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+        </svg>
+        {active && <span aria-hidden className="h-1 w-1 rounded-full bg-[#ff2b2b]" />}
+      </button>
+      {open && (
+        <div
+          role="menu"
+          className="glass absolute left-1/2 top-[calc(100%+14px)] z-50 w-[420px] -translate-x-1/2 overflow-hidden rounded-2xl p-2 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.9)]"
+        >
+          <div aria-hidden className="h-px bg-gradient-to-r from-transparent via-[var(--accent-deep)]/60 to-transparent" />
+          <div className="grid grid-cols-2 gap-1 p-1">
+            {OVERFLOW.map((l) => {
+              const on = isActive(l.href);
+              return (
+                <Link
+                  key={l.href}
+                  href={l.href}
+                  role="menuitem"
+                  onClick={() => setOpen(false)}
+                  className={`group rounded-xl px-3.5 py-3 transition ${
+                    on ? "bg-[rgba(225,6,0,0.14)]" : "hover:bg-white/[0.06]"
+                  }`}
+                >
+                  <span className={`block text-[14px] font-bold ${on ? "text-white" : "text-white/90 group-hover:text-white"}`}>
+                    {l.label}
+                  </span>
+                  <span className="tnum mt-0.5 block text-[10px] tracking-[0.16em] text-[var(--muted)]">{l.desc.toUpperCase()}</span>
+                </Link>
+              );
+            })}
           </div>
         </div>
-        <nav
-          aria-label="Primary"
-          className="mt-1 flex items-center gap-x-5 gap-y-1 overflow-x-auto whitespace-nowrap py-1 [scrollbar-width:thin] [&::-webkit-scrollbar]:h-1 [&::-webkit-scrollbar-thumb]:rounded [&::-webkit-scrollbar-thumb]:bg-[var(--border-strong)]"
-        >
-          {NAV.map((g) => (
-            <span key={g.group} className="flex shrink-0 items-center gap-1">
-              <span aria-hidden="true" className="panel-label mr-1 shrink-0">
-                {g.group}
-              </span>
-              {g.links.map((l) => {
-                const active = isActive(l.href);
-                return (
-                  <Link
-                    key={l.href}
-                    href={l.href}
-                    aria-current={active ? "page" : undefined}
-                    className={`touch inline-flex shrink-0 items-center rounded-md px-3 text-sm font-semibold ${
-                      active
-                        ? "bg-[var(--raised)] text-[var(--accent)] shadow-[inset_0_-2px_0_0_var(--accent)]"
-                        : "text-[var(--text)] hover:bg-[var(--raised)] hover:text-[var(--accent)]"
-                    }`}
-                  >
-                    {l.label}
-                  </Link>
-                );
-              })}
-            </span>
-          ))}
-        </nav>
-      </div>
-    </header>
+      )}
+    </div>
+  );
+}
+
+function MobileMenu({ isActive }: { isActive: (h: string) => boolean }) {
+  const [open, setOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = "";
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open ]);
+
+  return (
+    <span className="lg:hidden">
+      <button
+        onClick={() => setOpen(true)}
+        aria-label="Open menu"
+        aria-expanded={open}
+        className="touch inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-white"
+      >
+        <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden>
+          <line x1="2" y1="4.5" x2="14" y2="4.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+          <line x1="2" y1="8" x2="14" y2="8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+          <line x1="6" y1="11.5" x2="14" y2="11.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+        </svg>
+      </button>
+      {open && (
+        <div className="fixed inset-0 z-[70] flex flex-col bg-[#07070a]/92 backdrop-blur-2xl" role="dialog" aria-modal="true" aria-label="Menu">
+          <div className="flex h-16 items-center gap-2 px-4">
+            <span className="display text-xl font-bold italic">pitwall<span className="text-[var(--accent)]">.ai</span></span>
+            <button
+              onClick={() => setOpen(false)}
+              aria-label="Close menu"
+              className="touch ml-auto inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.05] text-white"
+            >
+              ✕
+            </button>
+          </div>
+          <div aria-hidden className="h-px bg-gradient-to-r from-transparent via-[var(--accent-deep)]/60 to-transparent" />
+          <div className="flex-1 overflow-y-auto px-5 pb-10 pt-4">
+            {SHEET_GROUPS.map((g) => (
+              <div key={g.title} className="mt-6 first:mt-2">
+                <p className="panel-label opacity-70">{g.title}</p>
+                <ul className="mt-2 overflow-hidden rounded-2xl border border-white/[0.07] bg-white/[0.02]">
+                  {g.links.map((l) => {
+                    const on = isActive(l.href);
+                    return (
+                      <li key={l.href} className="border-b border-white/[0.06] last:border-0">
+                        <Link
+                          href={l.href}
+                          onClick={() => setOpen(false)}
+                          aria-current={on ? "page" : undefined}
+                          className={`flex items-center gap-3 px-4 py-3.5 text-[17px] font-semibold ${on ? "text-white" : "text-white/85"}`}
+                        >
+                          {on && <span aria-hidden className="h-5 w-[3px] rounded-full bg-gradient-to-b from-[#ff2b2b] to-[#9d0400]" />}
+                          {l.label}
+                          <span aria-hidden className="ml-auto text-[var(--faint)]">→</span>
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            ))}
+            <div className="mt-6 flex flex-wrap gap-2">
+              <ModeToggle />
+              <LangToggle />
+            </div>
+          </div>
+        </div>
+      )}
+    </span>
   );
 }

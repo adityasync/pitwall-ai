@@ -72,14 +72,14 @@ export function DriverClient({ raceId, code }: { raceId: string; code: string })
 
   if (status === "loading") {
     return (
-      <main className="mx-auto w-full max-w-5xl px-4 py-10">
+      <main className="mx-auto w-full max-w-5xl px-4 sm:px-6 py-10">
         <StateCard kind="loading" title={`Loading ${code}`} text="Reading driver data…" progress={70} />
       </main>
     );
   }
   if (status === "error" || !driver) {
     return (
-      <main className="mx-auto w-full max-w-5xl px-4 py-10">
+      <main className="mx-auto w-full max-w-5xl px-4 sm:px-6 py-10">
         <StateCard kind="error" title="Driver not found" text={`${code} has no data in ${raceId}.`} />
       </main>
     );
@@ -95,7 +95,7 @@ export function DriverClient({ raceId, code }: { raceId: string; code: string })
   ].join(" ");
 
   return (
-    <main className="mx-auto w-full max-w-5xl px-4 pb-10 pt-6">
+    <main className="mx-auto w-full max-w-5xl px-4 sm:px-6 pb-12 pt-5">
       <Link href={`/race/${raceId}/easy`} className="touch inline-flex items-center text-sm text-[var(--accent)]">
         ← Back to race
       </Link>
@@ -112,7 +112,7 @@ export function DriverClient({ raceId, code }: { raceId: string; code: string })
         <p className="panel-label mb-2">Race story · stints and stops</p>
         <ol className="flex flex-wrap items-center gap-2">
           {(stints[code] ?? []).map((s) => (
-            <li key={s.stint} className="tnum flex items-center gap-2 rounded-md border border-[var(--border)] bg-[var(--panel)] px-3 py-2 text-sm">
+            <li key={s.stint} className="tnum flex items-center gap-2 card px-3 py-2 text-sm">
               <TyreDot compound={s.compound} age={s.ageAtStart} />
               <span>Laps {s.lapStart}–{s.lapEnd}</span>
             </li>
@@ -126,7 +126,7 @@ export function DriverClient({ raceId, code }: { raceId: string; code: string })
       </section>
 
       {lapChart && (
-        <section aria-label="Lap times" className="mt-6 rounded-md border border-[var(--border)] bg-[var(--panel)] p-4">
+        <section aria-label="Lap times" className="mt-6 card p-4">
           <p className="panel-label mb-1">Lap times{MateName(mate)} · pit laps removed</p>
           <svg viewBox={`0 0 ${lapChart.W} ${lapChart.H}`} style={{ width: "100%", height: 140 }} role="img" aria-label={`${code} lap times`}>
             <polyline points={lapChart.pts} fill="none" stroke={driver.teamColour} strokeWidth={2} />
@@ -147,7 +147,7 @@ export function DriverClient({ raceId, code }: { raceId: string; code: string })
         ) : (
           <ul className="grid gap-2">
             {radio.map((c, i) => (
-              <li key={i} className="rounded-md border border-[var(--border)] bg-[var(--panel)] p-3">
+              <li key={i} className="card p-3">
                 <p className="tnum text-xs text-[var(--muted)]">LAP {c.lap}</p>
                 <audio controls preload="none" src={c.url} className="mt-1 w-full" />
               </li>
@@ -157,7 +157,7 @@ export function DriverClient({ raceId, code }: { raceId: string; code: string })
       </section>
 
       {mate && stats?.pace[mate.code] && pace && (
-        <section aria-label="Head to head" className="tnum mt-6 rounded-md border border-[var(--border)] bg-[var(--panel)] p-4 text-sm">
+        <section aria-label="Head to head" className="tnum mt-6 card p-4 text-sm">
           <p className="panel-label mb-2">Head to head vs {mate.code}</p>
           <p>Median: {code} {fmtLapTime(pace.median)} vs {mate.code} {fmtLapTime(stats.pace[mate.code].median)}</p>
           <p>Best: {code} {fmtLapTime(pace.bestLap)} vs {mate.code} {fmtLapTime(stats.pace[mate.code].bestLap)}</p>

@@ -48,7 +48,7 @@ export default function ExportPage() {
   };
 
   return (
-    <main className="mx-auto w-full max-w-5xl px-4 pb-10 pt-6">
+    <main className="mx-auto w-full max-w-5xl px-4 sm:px-6 pb-12 pt-5">
       <p className="panel-label">Chart builder and export</p>
       <h1 className="display mt-1 text-4xl font-bold">Take the data with you</h1>
       {status === "loading" && <p className="mt-4 text-[var(--muted)]">Loading…</p>}
@@ -65,7 +65,7 @@ export default function ExportPage() {
       {status === "ready" && (
         <ul className="mt-4 grid gap-3">
           {races.map((r) => (
-            <li key={r.id} className="rounded-md border border-[var(--border)] bg-[var(--panel)] p-4">
+            <li key={r.id} className="card p-4">
               <p className="display text-xl font-bold">{r.name}</p>
               <p className="tnum text-xs text-[var(--muted)]">{r.id}</p>
               <div className="mt-3 flex flex-wrap gap-2 text-sm">

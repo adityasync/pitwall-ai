@@ -63,14 +63,14 @@ export function CornersClient({ raceId }: { raceId: string }) {
 
   if (!bundle) {
     return (
-      <main className="mx-auto w-full max-w-5xl px-4 py-10">
+      <main className="mx-auto w-full max-w-5xl px-4 sm:px-6 py-10">
         <StateCard kind="loading" title="Loading corners" text="Reading track data…" progress={70} />
       </main>
     );
   }
   if (bundle.status !== "ready" || !bundle.track) {
     return (
-      <main className="mx-auto w-full max-w-5xl px-4 py-10">
+      <main className="mx-auto w-full max-w-5xl px-4 sm:px-6 py-10">
         <StateCard kind="error" title="Could not load this race" text="Build the race files first." />
       </main>
     );
@@ -78,7 +78,7 @@ export function CornersClient({ raceId }: { raceId: string }) {
 
   const corners = bundle.track.corners;
   return (
-    <main className="mx-auto w-full max-w-5xl px-4 pb-10 pt-6">
+    <main className="mx-auto w-full max-w-5xl px-4 sm:px-6 pb-12 pt-5">
       <Link href={`/race/${raceId}/easy`} className="touch inline-flex items-center text-sm text-[var(--accent)]">
         ← Back to race
       </Link>
@@ -109,7 +109,7 @@ export function CornersClient({ raceId }: { raceId: string }) {
       </div>
 
       {table && pair.length === 2 ? (
-        <section aria-label={`Turn ${table.corner.n}`} className="mt-4 rounded-md border border-[var(--border)] bg-[var(--panel)] p-4">
+        <section aria-label={`Turn ${table.corner.n}`} className="mt-4 card p-4">
           <p className="display text-2xl font-bold">TURN {table.corner.n} · {pair[0]} vs {pair[1]}</p>
           <table className="tnum mt-2 w-full text-sm">
             <thead>

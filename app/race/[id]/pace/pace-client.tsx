@@ -5,6 +5,7 @@ import Link from "next/link";
 import { fmtLapTime } from "@/lib/format";
 import { loadRaceBundle, type RaceBundle } from "@/lib/race";
 import { StateCard } from "@/components/StateCard";
+import { BestLapsTable } from "@/components/BestLapsTable";
 
 export function PaceClient({ raceId }: { raceId: string }) {
   const [bundle, setBundle] = useState<RaceBundle | null>(null);
@@ -45,16 +46,25 @@ export function PaceClient({ raceId }: { raceId: string }) {
     return { series, W, H, X, Y, lo, hi };
   }, [bundle, sel]);
 
+  const order = useMemo(
+    () => [...(bundle?.drivers ?? [])].sort((a, c) => (a.finish ?? 99) - (c.finish ?? 99)).map((d) => d.code),
+    [bundle]
+  );
+  const colours = useMemo(
+    () => Object.fromEntries((bundle?.drivers ?? []).map((d) => [d.code, d.teamColour])),
+    [bundle]
+  );
+
   if (!bundle) {
     return (
-      <main className="mx-auto w-full max-w-5xl px-4 py-10">
+      <main className="mx-auto w-full max-w-5xl px-4 sm:px-6 py-10">
         <StateCard kind="loading" title="Loading pace" text="Reading lap times…" progress={70} />
       </main>
     );
   }
   if (bundle.status !== "ready" || !bundle.meta) {
     return (
-      <main className="mx-auto w-full max-w-5xl px-4 py-10">
+      <main className="mx-auto w-full max-w-5xl px-4 sm:px-6 py-10">
         <StateCard kind="error" title="Could not load this race" text="Build the race files first." />
       </main>
     );
@@ -62,10 +72,10 @@ export function PaceClient({ raceId }: { raceId: string }) {
 
   const toggle = (code: string) =>
     setSel((s) => (s.includes(code) ? s.filter((c) => c !== code) : [...s, code].slice(-4)));
-  const degr = bundle.stats?.degradation ?? {};
+  const degr = bundle?.stats?.degradation ?? {};
 
   return (
-    <main className="mx-auto w-full max-w-5xl px-4 pb-10 pt-6">
+    <main className="mx-auto w-full max-w-5xl px-4 sm:px-6 pb-12 pt-5">
       <Link href={`/race/${raceId}/easy`} className="touch inline-flex items-center text-sm text-[var(--accent)]">
         ← Back to race
       </Link>
@@ -80,8 +90,13 @@ export function PaceClient({ raceId }: { raceId: string }) {
         ))}
       </div>
 
+      <section aria-label="Fastest laps" className="card mt-6 p-4 sm:p-5">
+        <p className="panel-label mb-2">Fastest laps · sectors purple/green MEASURED</p>
+        <BestLapsTable laps={bundle.laps} order={order} colours={colours} />
+      </section>
+
       {chart && (
-        <section aria-label="Lap time by lap" className="mt-3 rounded-md border border-[var(--border)] bg-[var(--panel)] p-3">
+        <section aria-label="Lap time by lap" className="mt-3 card p-3">
           <p className="panel-label mb-1">Lap time by lap, coloured by tyre · pit laps removed</p>
           <svg viewBox={`0 0 ${chart.W} ${chart.H}`} style={{ width: "100%", height: 220 }} role="img" aria-label="Lap times by lap">
             {chart.series.map((s) => (

@@ -1,0 +1,20 @@
+# PITWALL.AI backend (Render blueprint). The Next app on Vercel treats this
+# service as progressive enhancement: NEXT_PUBLIC_API_BASE points here when
+# set, and every read falls back to static /data files, so a sleeping free
+# instance can never break the demo. Free sleeps after ~15 min idle; Starter
+# ($7/mo) stays awake — the only paid line item in the whole architecture.
+services:
+  - type: web
+    name: pitwall-api
+    runtime: python
+    rootDir: service
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "uvicorn app:app --host 0.0.0.0 --port $PORT"
+    plan: free
+    envVars:
+      - key: INGEST_SECRET
+        generateValue: true
+      - key: SITE_URL
+        sync: false # e.g. https://<your-app>.vercel.app (CORS allow-list)
+      - key: OPENF1_TOKEN
+        sync: false # optional, unused until a paid live feed exists

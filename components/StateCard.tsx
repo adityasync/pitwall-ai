@@ -23,27 +23,27 @@ export function StateCard({
   /** 0..100 for loading */
   progress?: number;
 }) {
-  const accent =
+  const dot =
     kind === "error"
-      ? "text-[var(--bad)] border-[var(--bad)]"
+      ? "bg-[var(--bad)]"
       : kind === "loading" || kind === "thinking"
-        ? "text-[var(--accent)] border-[var(--border-strong)]"
-        : "text-[var(--text)] border-[var(--border)]";
+        ? "bg-[var(--accent)] animate-pulse"
+        : "bg-[var(--faint)]";
   return (
-    <div
-      role="status"
-      className={`rounded-md border bg-[var(--panel)] p-6 ${accent}`}
-    >
-      <p className="panel-label mb-2">{kind}</p>
-      <p className="display text-2xl font-bold text-[var(--text)]">{title}</p>
-      <p className="mt-2 text-[var(--muted)]">{text}</p>
+    <div role="status" className="card p-6 sm:p-8">
+      <p className="panel-label flex items-center gap-2">
+        <span aria-hidden className={`inline-block h-1.5 w-1.5 rounded-full ${dot}`} />
+        {kind}
+      </p>
+      <p className="display mt-2 text-2xl font-bold sm:text-3xl">{title}</p>
+      <p className="mt-2 max-w-xl leading-relaxed text-[var(--muted)]">{text}</p>
       {(kind === "loading" || kind === "thinking") && (
         <div
-          className="mt-4 h-1.5 overflow-hidden rounded bg-[var(--raised)]"
+          className="mt-5 h-1.5 max-w-xl overflow-hidden rounded-full bg-[var(--raised)]"
           aria-hidden={progress == null}
         >
           <div
-            className="h-full rounded bg-[var(--accent)] transition-all"
+            className="h-full rounded-full bg-[var(--accent)] transition-all"
             style={{ width: `${progress ?? 64}%` }}
           />
         </div>
@@ -56,7 +56,7 @@ export function StateCard({
         </p>
       )}
       {(action || second) && (
-        <div className="mt-4 flex flex-wrap gap-2">
+        <div className="mt-5 flex flex-wrap gap-2">
           {action}
           {second}
         </div>

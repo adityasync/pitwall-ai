@@ -18,8 +18,9 @@ const METRICS = [
 ];
 
 const SOURCES = [
-  { name: "OpenF1", access: "Free historical from 2023; live needs a paid plan.", note: "Primary source for everything." },
+  { name: "OpenF1", access: "Free historical from 2023; live needs a paid plan.", note: "Primary source for replays: laps, positions, telemetry, map." },
   { name: "FastF1", access: "Python loader with local cache.", note: "Fallback for lap telemetry; unused while OpenF1 suffices." },
+  { name: "Ergast mirror (Kaggle, data/*.csv)", access: "1950–2026 seasons, results, standings, qualifying.", note: "History pages only (Season/Drivers/Circuits) via pipeline/build_history.py. Never for timing." },
 ];
 
 const LIMITS = [
@@ -33,7 +34,7 @@ const LIMITS = [
 
 export default function MethodsPage() {
   return (
-    <main className="mx-auto w-full max-w-5xl px-4 pb-10 pt-6">
+    <main className="mx-auto w-full max-w-5xl px-4 sm:px-6 pb-12 pt-5">
       <p className="panel-label">Methods and data limits</p>
       <h1 className="display mt-1 text-4xl font-bold sm:text-5xl">What is measured, and what is a guess.</h1>
       <p className="mt-3 max-w-2xl text-[var(--muted)]">
@@ -73,7 +74,7 @@ export default function MethodsPage() {
         <h2 className="panel-label mb-2">Data sources</h2>
         <ul className="grid gap-2">
           {SOURCES.map((s) => (
-            <li key={s.name} className="rounded-md border border-[var(--border)] bg-[var(--panel)] p-4">
+            <li key={s.name} className="card p-4">
               <p className="font-bold">{s.name}</p>
               <p className="text-sm text-[var(--muted)]">{s.access} {s.note}</p>
             </li>

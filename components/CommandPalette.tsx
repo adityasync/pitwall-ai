@@ -41,6 +41,8 @@ function PaletteInner() {
     () => [
       { label: `Easy race view — ${raceId}`, hint: "watch", race: true, run: () => router.push(`/race/${raceId}/easy`) },
       { label: `Pro workstation — ${raceId}`, hint: "watch", race: true, run: () => router.push(`/race/${raceId}/pro`) },
+      { label: `Onboard telemetry — ${raceId}`, hint: "watch", race: true, run: () => router.push(`/race/${raceId}/onboard`) },
+      { label: `Qualifying — ${raceId}`, hint: "watch", race: true, run: () => router.push(`/race/${raceId}/quali`) },
       { label: "Compare drivers", hint: "analyse", race: true, run: () => router.push(`/race/${raceId}/compare`) },
       { label: "Corner analysis", hint: "analyse", race: true, run: () => router.push(`/race/${raceId}/corners`) },
       { label: "Strategy simulator", hint: "analyse", race: true, run: () => router.push(`/race/${raceId}/strategy`) },
@@ -49,6 +51,7 @@ function PaletteInner() {
       { label: "Recap and share", hint: "watch", race: true, run: () => router.push(`/race/${raceId}/recap`) },
       { label: "Ask the AI", hint: "more", race: true, run: () => router.push(`/ask?race=${raceId}`) },
       { label: "Session explorer", hint: "more", race: false, run: () => router.push("/explorer") },
+      { label: "Live positions (beta)", hint: "watch", race: false, run: () => router.push("/live") },
       { label: "Telemetry lab", hint: "analyse", race: false, run: () => router.push("/telemetry") },
       { label: "Standings", hint: "people", race: false, run: () => router.push("/standings") },
       { label: "Methods and data limits", hint: "more", race: false, run: () => router.push("/methods") },

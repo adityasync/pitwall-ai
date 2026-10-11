@@ -10,6 +10,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from compute_stats import compute_stats
 from detect_moments import detect_moments
+from build_race import _clean_channel, gp_name
 
 
 def sample_ctx():
@@ -76,3 +77,21 @@ def test_moment_evidence_has_trust():
             assert e["trust"] in ("MEASURED", "DERIVED", "ESTIMATE")
         assert set(m["explain"]) == {"easy", "pro"}
         assert set(m["explain"]["easy"]) == {"en", "hi"}
+
+
+def test_clean_channel_bridges_nan():
+    import numpy as np
+    ch = _clean_channel(np.array([100.0, float("nan"), 120.0]))
+    assert ch.tolist() == [100.0, 110.0, 120.0]
+    assert all(isinstance(int(v), int) for v in ch)  # int() cast never blows up
+
+
+def test_clean_channel_all_nan_zeros():
+    import numpy as np
+    ch = _clean_channel(np.array([float("nan"), float("nan")]))
+    assert (ch == 0).all()  # 2026 null-drs era: no signal, honest zeros
+
+
+def test_gp_name_sepang_override():
+    assert gp_name({"country_name": "Bahrain", "location": "Kuala Lumpur"}) == "Malaysian"
+    assert gp_name({"country_name": "Italy", "location": "Monza"}) == "Italy"

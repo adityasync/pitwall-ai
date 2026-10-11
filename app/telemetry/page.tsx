@@ -157,14 +157,14 @@ function Lab() {
 
   if (!raceId) {
     return (
-      <main className="mx-auto w-full max-w-5xl px-4 py-10">
+      <main className="mx-auto w-full max-w-5xl px-4 sm:px-6 py-10">
         <StateCard kind="loading" title="Finding telemetry" text="Loading the race list…" progress={50} />
       </main>
     );
   }
 
   return (
-    <main className="mx-auto w-full max-w-5xl px-4 pb-10 pt-6">
+    <main className="mx-auto w-full max-w-5xl px-4 sm:px-6 pb-12 pt-5">
       <p className="panel-label">Telemetry lab · {meta?.name ?? raceId}</p>
       <h1 className="display mt-1 text-4xl font-bold">Any laps, any channels</h1>
 
@@ -198,7 +198,7 @@ function Lab() {
               </button>
             ))}
           </div>
-          <div ref={chartRef} className="mt-2 rounded-md border border-[var(--border)] bg-[var(--panel)] p-3">
+          <div ref={chartRef} className="mt-2 card p-3">
             <TraceChart laps={traces} cursor={cursor} onCursor={setCursor} height={300} />
           </div>
           {cursor != null && (
@@ -217,7 +217,7 @@ function Lab() {
               Open these laps in Compare
             </Link>
           </div>
-          <section aria-label="Notes" className="mt-4 rounded-md border border-[var(--border)] bg-[var(--panel)] p-4">
+          <section aria-label="Notes" className="mt-4 card p-4">
             <p className="panel-label mb-2">Notes · saved with the link on this device</p>
             <ul className="tnum grid gap-1 text-sm">
               {notes.map((n, i) => (
@@ -230,7 +230,7 @@ function Lab() {
                 placeholder="+ Add a note at the cursor" aria-label="Add a note at the cursor"
                 className="touch min-w-0 flex-1 rounded-md border border-[var(--border-strong)] bg-[var(--raised)] px-3 text-sm" />
               <button onClick={addNote} disabled={cursor == null}
-                className="touch rounded-md bg-[var(--accent)] px-4 text-sm font-bold text-black disabled:opacity-50">Add</button>
+                className="touch rounded-md bg-[var(--accent-deep)] px-4 text-sm font-bold text-white disabled:opacity-50">Add</button>
             </div>
           </section>
         </>

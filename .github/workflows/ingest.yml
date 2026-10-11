@@ -1,0 +1,62 @@
+# Scheduled ingestion — nobody runs the pipeline on a laptop anymore.
+# This workflow runs on GitHub's machines: it works with your laptop off.
+#
+# Two modes:
+#   schedule (daily 02:00 UTC): diff the OpenF1 calendar against
+#     public/data/index.json, build up to 2 missing races (+quali), commit.
+#   manual dispatch: paste a backfill spec like "2026 1-14" or
+#     "2025 2-17 19-24" and it builds exactly those rounds, then commits.
+#     (Actions tab -> ingest -> Run workflow. Works from your phone.)
+# Either way: commit back -> Vercel redeploys the app automatically.
+name: ingest
+
+on:
+  schedule:
+    - cron: "0 2 * * *"
+  workflow_dispatch:
+    inputs:
+      spec:
+        description: 'Backfill spec, e.g. "2026 1-14". Empty = steady-state (newest 2 missing).'
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ingest
+  cancel-in-progress: false
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: pipeline/requirements.txt
+      - run: pip install -r pipeline/requirements.txt
+      - name: Build (steady-state)
+        if: inputs.spec == ''
+        run: |
+          python pipeline/find_new.py --max-new 2 | while read -r year round; do
+            [ -z "$year" ] && continue
+            echo "=== building $year round $round ==="
+            python pipeline/build_race.py "$year" "$round" || exit 1
+            python pipeline/build_quali.py "$year" "$round" || echo "quali failed, continuing"
+          done
+          python pipeline/check_data.py
+      - name: Build (backfill spec)
+        if: inputs.spec != ''
+        run: python pipeline/backfill.py ${{ inputs.spec }}
+      - name: Commit fresh data
+        run: |
+          git config user.name "pitwall-ingest"
+          git config user.email "pitwall-ingest@users.noreply.github.com"
+          git add public/data
+          git diff --cached --quiet && echo "nothing new" && exit 0
+          git commit -m "data: ingest ${{ inputs.spec }} $(date -u +%F)"
+          git pull --rebase && git push

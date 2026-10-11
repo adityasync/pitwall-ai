@@ -69,7 +69,7 @@ export default function FollowPage() {
   const favDriver = drivers.find((d) => d.code === fav);
 
   return (
-    <main className="mx-auto w-full max-w-3xl px-4 pb-10 pt-6">
+    <main className="mx-auto w-full max-w-3xl px-4 sm:px-6 pb-12 pt-5">
       <p className="panel-label">Make it yours</p>
       <h1 className="display mt-1 text-4xl font-bold">Who are you rooting for?</h1>
       <p className="mt-2 text-[var(--muted)]">
@@ -127,7 +127,7 @@ export default function FollowPage() {
           <p className="tnum text-sm text-[var(--muted)]">
             {favDriver.team} · alerts: {alerts.length ? alerts.join(", ") : "off"}
           </p>
-          <Link href={`/race/${raceId}/driver/${fav}`} className="touch mt-3 inline-flex items-center rounded-md bg-[var(--accent)] px-5 text-sm font-bold text-black">
+          <Link href={`/race/${raceId}/driver/${fav}`} className="touch mt-3 inline-flex items-center rounded-md bg-[var(--accent-deep)] px-5 text-sm font-bold text-white">
             Continue →
           </Link>
         </section>

@@ -6,7 +6,7 @@ import { useReplayStore } from "@/stores/replayStore";
 import { useSelectionStore } from "@/stores/selectionStore";
 import { useUiStore } from "@/stores/uiStore";
 import { indexAtT, lapAtT } from "@/lib/clock";
-import { fmtGap } from "@/lib/format";
+import { dotsAtT, trailsAtT } from "@/lib/map";
 import { DRS_GAP_S, SPEEDS, TYRE_HEALTH_LAPS } from "@/lib/config";
 import { GLOSSARY } from "@/lib/glossary";
 import { loadRaceBundle, type RaceBundle } from "@/lib/race";
@@ -27,6 +27,8 @@ export function EasyClient({ raceId }: { raceId: string }) {
   const { lang, set: setUi } = useUiStore();
   const [bundle, setBundle] = useState<RaceBundle | null>(null);
   const [term, setTerm] = useState("DRS");
+  const [selected, setSelected] = useState<string | null>(null);
+  const [follow, setFollow] = useState<string | null>(null);
   const aiRef = useRef<HTMLElement>(null);
   const mapRef = useRef<HTMLDivElement>(null);
 
@@ -107,18 +109,23 @@ export function EasyClient({ raceId }: { raceId: string }) {
         const s = positions.drivers[d.code];
         const pos = s ? s.pos[Math.min(i, s.pos.length - 1)] : null;
         const iv = bundle.intervals?.drivers[d.code];
-        const gapL = iv ? seriesAt(iv.t, iv.gapLeader, t) : null;
+        const ahead = iv ? seriesAt(iv.t, iv.gapAhead, t) : null;
         const lapRow = bundle.laps[d.code]?.find((r) => r.lap === lapNow)
           ?? [...(bundle.laps[d.code] ?? [])].reverse().find((r) => r.lap <= lapNow);
         const age = lapRow?.tyreAge ?? null;
         const health = age == null ? null : Math.max(0, Math.min(1, 1 - age / TYRE_HEALTH_LAPS));
+        const status =
+          lapRow?.pitLane ? ("PIT" as const)
+          : ahead != null && ahead > 0 && ahead <= 1 ? ("DRS" as const)
+          : null;
         return {
           driver: d,
           pos,
-          gap: gapL == null ? null : gapL === 0 ? "LEADER" : fmtGap(gapL),
+          gap: pos === 1 ? "LEADER" : ahead == null ? null : `+${ahead.toFixed(1)}`,
           compound: lapRow?.compound ?? null,
           age,
           health,
+          status,
           trend: d.grid != null && pos != null ? d.grid - pos : null,
         };
       })
@@ -176,18 +183,42 @@ export function EasyClient({ raceId }: { raceId: string }) {
 
   const dots: MapDot[] = useMemo(() => {
     if (!positions || !bundle) return [];
-    const i = indexAtT(positions.t, t);
-    if (i < 0 || !battle) return [];
-    return [battle.a, battle.b]
-      .map((code) => {
-        const s = positions.drivers[code];
-        const d = bundle.drivers.find((x) => x.code === code);
-        if (!s?.x || !s?.y || !d) return null;
-        const j = Math.min(i, s.x.length - 1);
-        return { code, x: s.x[j], y: s.y[j], colour: d.teamColour };
-      })
-      .filter((x): x is MapDot => x !== null);
-  }, [positions, bundle, battle, t]);
+    const all = dotsAtT(positions, bundle.drivers, t);
+    const hot = new Set<string>();
+    if (battle) {
+      if (battle.a) hot.add(battle.a);
+      if (battle.b) hot.add(battle.b);
+    }
+    if (selected) hot.add(selected);
+    if (hot.size === 0) return all.map((d) => ({ ...d, dim: all.length > 6 }));
+    return all.map((d) => ({ ...d, highlight: hot.has(d.code), dim: !hot.has(d.code) }));
+  }, [positions, bundle, battle, selected, t]);
+  const leaderCode = useMemo(() => tower[0]?.driver.code ?? null, [tower]);
+  const trails = useMemo(() => {
+    if (!positions) return null;
+    const codes = new Set<string>();
+    if (battle?.a) codes.add(battle.a);
+    if (battle?.b) codes.add(battle.b);
+    if (selected) codes.add(selected);
+    if (leaderCode) codes.add(leaderCode);
+    if (codes.size === 0) return null;
+    if (typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return null;
+    return trailsAtT(positions, [...codes].slice(0, 4), t, 12, 12);
+  }, [positions, battle, selected, leaderCode, t]);
+  const drsCodes = useMemo(
+    () => tower.filter((r) => r.status === "DRS").map((r) => r.driver.code),
+    [tower]
+  );
+  const gapLabels = useMemo(() => {
+    const out: Record<string, string> = {};
+    if (!battle) return out;
+    for (const r of tower) {
+      if ((r.driver.code === battle.a || r.driver.code === battle.b) && r.gap && r.gap !== "LEADER") {
+        out[r.driver.code] = r.gap;
+      }
+    }
+    return out;
+  }, [tower, battle]);
 
   const driveOfDay = useMemo(() => {
     if (tower.length === 0) return null;
@@ -206,14 +237,14 @@ export function EasyClient({ raceId }: { raceId: string }) {
 
   if (!bundle) {
     return (
-      <main className="mx-auto w-full max-w-5xl px-4 py-10">
+      <main className="mx-auto w-full max-w-5xl px-4 sm:px-6 py-10">
         <StateCard kind="loading" title="Loading replay" text={`Fetching ${raceId}…`} progress={64} />
       </main>
     );
   }
   if (bundle.status !== "ready" || !meta || !positions) {
     return (
-      <main className="mx-auto w-full max-w-5xl px-4 py-10">
+      <main className="mx-auto w-full max-w-5xl px-4 sm:px-6 py-10">
         <StateCard
           kind="error"
           title="Could not load this race"
@@ -225,7 +256,7 @@ export function EasyClient({ raceId }: { raceId: string }) {
 
   const glossary = GLOSSARY.find((g) => g.term === term) ?? GLOSSARY[0];
   return (
-    <main className="mx-auto w-full max-w-5xl px-4 pb-24 pt-4 sm:pb-10">
+    <main className="mx-auto w-full max-w-5xl px-4 sm:px-6 pb-24 pt-5 sm:pb-12">
       <h1 className="sr-only">{meta.name} — Easy mode</h1>
 
       <div className="mt-4">
@@ -240,7 +271,7 @@ export function EasyClient({ raceId }: { raceId: string }) {
         />
         <div className="mt-2 flex gap-2">
           <button
-            className="touch rounded-md bg-[var(--accent)] px-4 text-sm font-bold text-black"
+            className="btn btn-primary px-5 text-sm"
             onClick={() => (playing ? pause() : play())}
           >
             {playing ? "Pause" : "Play"}
@@ -248,7 +279,7 @@ export function EasyClient({ raceId }: { raceId: string }) {
           {SPEEDS.map((s) => (
             <button
               key={s}
-              className="touch rounded-md border border-[var(--border-strong)] px-3 text-sm"
+              className="touch rounded-lg border border-[var(--border-strong)] bg-[var(--panel)] px-3 text-sm"
               onClick={() => set({ speed: s })}
               aria-pressed={speed === s}
             >
@@ -273,18 +304,18 @@ export function EasyClient({ raceId }: { raceId: string }) {
             />
             {battle && (
               <>
-                <dl className="tnum mt-3 grid grid-cols-3 gap-2 text-center">
-                  <div className="rounded-md border border-[var(--border)] bg-[var(--panel)] p-3">
+                <dl className="tnum mt-4 grid grid-cols-3 gap-3 text-center">
+                  <div className="card p-4 text-center">
                     <dt className="text-[11px] tracking-widest text-[var(--muted)]">GAP NOW</dt>
                     <dd className="text-xl font-bold">{battle.gapNow != null ? `${battle.gapNow.toFixed(1)} s` : "—"}</dd>
                   </div>
-                  <div className="rounded-md border border-[var(--border)] bg-[var(--panel)] p-3">
+                  <div className="card p-4 text-center">
                     <dt className="text-[11px] tracking-widest text-[var(--muted)]">CLOSING</dt>
                     <dd className="text-xl font-bold">
                       {battle.rate != null && battle.rate > 0.02 ? `~${battle.rate.toFixed(1)} s/lap` : "holding"}
                     </dd>
                   </div>
-                  <div className="rounded-md border border-[var(--border)] bg-[var(--panel)] p-3">
+                  <div className="card p-4 text-center">
                     <dt className="text-[11px] tracking-widest text-[var(--muted)]">LIKELY PASS IN</dt>
                     <dd className="text-xl font-bold">{battle.passIn != null ? `~${battle.passIn} laps` : "—"}</dd>
                   </div>
@@ -294,13 +325,13 @@ export function EasyClient({ raceId }: { raceId: string }) {
             )}
             <div className="mt-3 flex flex-wrap gap-2">
               <button
-                className="touch rounded-md border border-[var(--accent)] px-4 text-sm font-bold text-[var(--accent)]"
+                className="btn btn-secondary border-[var(--accent)] px-5 text-sm font-bold text-[var(--accent)] hover:text-[var(--accent)]"
                 onClick={() => scrollTo(aiRef.current)}
               >
                 {battle ? "Why is he faster?" : "Why did this happen?"}
               </button>
               <button
-                className="touch rounded-md border border-[var(--border-strong)] px-4 text-sm font-semibold"
+                className="btn btn-secondary px-5 text-sm"
                 onClick={() => scrollTo(mapRef.current)}
               >
                 Show me on the track
@@ -313,27 +344,36 @@ export function EasyClient({ raceId }: { raceId: string }) {
       </section>
 
       {/* Battle on track */}
-      <section aria-label="The battle on track" className="mt-8" ref={mapRef}>
-        <p className="panel-label">The battle on track</p>
+      <section aria-label="The battle on track" className="mt-10" ref={mapRef}>
+        <p className="panel-label">The battle on track · tap a car to follow it</p>
         <div className="mt-2">
           <TrackMap
             track={bundle.track}
             dots={dots}
+            battle={battle ? [battle.a, battle.b].filter(Boolean) : []}
+            leader={leaderCode}
+            trails={trails}
+            onSelect={(c) => setSelected((s) => (s === c ? null : c))}
+            selected={selected}
+            drsCodes={drsCodes}
+            gapLabels={gapLabels}
+            follow={follow}
+            onFollow={setFollow}
             label={
               battle && battle.gapNow != null && battle.gapNow < DRS_GAP_S
-                ? "Straight ahead: DRS zone — under a second, a pass may be coming."
+                ? "Straight ahead: DRS zone — under a second, a pass may be coming. Dashed ring = DRS."
                 : dots.length === 0
                   ? `Car positions on the map are available for ${(meta?.coverage.telemetryDrivers ?? []).join(", ") || "telemetry drivers"} in this replay.`
-                  : undefined
+                  : `${dots.length} cars · battle pair highlighted · trails show the last 12 s · tap a car, FOLLOW to track it.`
             }
           />
         </div>
       </section>
 
       {/* Tower */}
-      <section id="tower" aria-label="Who is where" className="mt-8 scroll-mt-20">
-        <p className="panel-label">Who is where · gaps MEASURED · bars ESTIMATE</p>
-        <ol className="mt-2 overflow-hidden rounded-md border border-[var(--border)]">
+      <section id="tower" aria-label="Who is where" className="mt-10 scroll-mt-20">
+        <p className="panel-label">Running order · interval to the car ahead MEASURED</p>
+        <ol className="mt-3 overflow-hidden rounded-xl border border-[var(--border)]">
           {tower.map((r) => (
             <TimingRow
               key={r.driver.code}
@@ -344,6 +384,7 @@ export function EasyClient({ raceId }: { raceId: string }) {
               tyre={r.compound}
               age={r.age}
               trend={r.trend}
+              status={r.status}
             />
           ))}
         </ol>
@@ -355,9 +396,9 @@ export function EasyClient({ raceId }: { raceId: string }) {
 
       {/* Drive of the day */}
       {driveOfDay && (
-        <section aria-label="Drive of the day so far" className="mt-8">
+        <section aria-label="Drive of the day so far" className="mt-10">
           <p className="panel-label">Drive of the day so far</p>
-          <div className="mt-2 flex items-center gap-3 rounded-md border border-[var(--border)] bg-[var(--panel)] p-4">
+          <div className="card mt-3 flex items-center gap-4 p-5">
             <span className="tnum text-2xl font-bold text-[var(--good)]">+{driveOfDay.trend}</span>
             <div>
               <p className="text-lg font-bold">{driveOfDay.driver.name.split(" ").slice(-1)}</p>
@@ -372,9 +413,9 @@ export function EasyClient({ raceId }: { raceId: string }) {
       )}
 
       {/* Learn */}
-      <section id="learn" aria-label="Learn as you watch" className="mt-8 scroll-mt-20">
+      <section id="learn" aria-label="Learn as you watch" className="mt-10 scroll-mt-20">
         <p className="panel-label">Learn as you watch</p>
-        <div className="mt-2 flex flex-wrap gap-2">
+        <div className="mt-4 flex flex-wrap gap-2">
           {GLOSSARY.map((g) => (
             <button
               key={g.term}
@@ -386,7 +427,7 @@ export function EasyClient({ raceId }: { raceId: string }) {
             </button>
           ))}
         </div>
-        <p className="mt-3 rounded-md border border-[var(--border)] bg-[var(--panel)] p-4">
+        <p className="card mt-4 p-5">
           <strong>{glossary.term}:</strong> {lang === "hi" ? glossary.hi : glossary.en}
         </p>
         <button
@@ -398,11 +439,11 @@ export function EasyClient({ raceId }: { raceId: string }) {
       </section>
 
       {/* Moments */}
-      <section id="moments" aria-label="Moments you may have missed" className="mt-8 scroll-mt-20">
+      <section id="moments" aria-label="Moments you may have missed" className="mt-10 scroll-mt-20">
         <p className="panel-label">Moments you may have missed</p>
-        <ul className="mt-2 grid gap-2">
+        <ul className="mt-4 grid gap-3">
           {missed.map((m) => (
-            <li key={m.id} className="rounded-md border border-[var(--border)] bg-[var(--panel)] p-4">
+            <li key={m.id} className="card p-5">
               <p className="tnum text-xs text-[var(--muted)]">
                 LAP {m.lap} · {m.type.toUpperCase()}
               </p>
@@ -416,7 +457,7 @@ export function EasyClient({ raceId }: { raceId: string }) {
             </li>
           ))}
           {missed.length === 0 && (
-            <li className="rounded-md border border-[var(--border)] bg-[var(--panel)] p-4 text-[var(--muted)]">
+            <li className="card p-5 text-[var(--muted)]">
               Nothing yet — scrub forward into the race.
             </li>
           )}
