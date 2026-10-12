@@ -1059,3 +1059,63 @@ RuntimeError: fetch failed https://api.openf1.org/v1/laps?session_key=9900: 404 
 [check] 2026-18-malaysia: total=1.28MB easy=86KB
 [check] 2026-19-singapore: total=1.27MB easy=53KB
 [check] history: total=0.08MB easy=20KB
+
+===== 2025 round 1 =====
+[pitwall] 2025-01-australia: Australia GP @ Melbourne (session_key=9693)
+[pitwall] counts: drivers=20 laps=928 stints=106 pit=82 pos=335 iv=18965 ov=172 rc=115 wx=178 radio=20
+[pitwall] telemetry drivers: ['NOR', 'VER', 'RUS']
+[fetch] location?session_key=9693&driver_number=63 -> 39559 rows
+[pitwall] telemetry drivers kept: ['NOR', 'VER', 'RUS']
+[pitwall] map cars: 20/20
+[pitwall] wrote E:\adityap\PitWallAi\public\data\2025-01-australia (548 moments, gz=1.03MB)
+[quali] 2025-01-australia: 303 laps
+[quali] wrote E:\adityap\PitWallAi\public\data\2025-01-australia\quali.json (19 drivers)
+
+===== 2025 round 2 =====
+[pitwall] 2025-02-china: China GP @ Shanghai (session_key=9998)
+[pitwall] counts: drivers=20 laps=1066 stints=45 pit=25 pos=461 iv=22207 ov=221 rc=58 wx=154 radio=44
+[pitwall] telemetry drivers: ['PIA', 'NOR', 'RUS']
+[fetch] car_data?session_key=9998&driver_number=63 -> 33477 rows
+[fetch] location?session_key=9998&driver_number=63 -> 34171 rows
+[pitwall] telemetry drivers kept: ['PIA', 'NOR', 'RUS']
+[pitwall] map cars: 20/20
+[pitwall] wrote E:\adityap\PitWallAi\public\data\2025-02-china (383 moments, gz=1.07MB)
+[quali] 2025-02-china: 314 laps
+[quali] wrote E:\adityap\PitWallAi\public\data\2025-02-china\quali.json (20 drivers)
+
+===== check_data =====
+[check] 2023-16-singapore: total=1.16MB easy=56KB
+[check] 2023-22-las-vegas: total=1.03MB easy=68KB
+[check] 2024-06-miami: total=1.14MB easy=55KB
+[check] 2024-12-british: total=1.00MB easy=43KB
+[check] 2024-21-brazil: total=1.06MB easy=54KB
+[check] 2025-01-australia: total=1.03MB easy=56KB
+[check] 2025-02-china: total=1.08MB easy=50KB
+[check] 2025-03-japan: total=1.07MB easy=43KB
+[check] 2025-04-bahrain: total=1.28MB easy=82KB
+[check] 2025-05-saudi-arabia: total=0.98MB easy=44KB
+[check] 2025-06-miami: total=0.61MB easy=29KB
+[check] 2025-07-emilia-romagna: total=1.12MB easy=64KB
+[check] 2025-08-monaco: total=1.14MB easy=60KB
+[check] 2025-09-spain: total=1.09MB easy=64KB
+[check] 2025-10-canada: total=1.11MB easy=67KB
+[check] 2025-11-austria: total=0.93MB easy=57KB
+[check] 2025-12-british: total=1.01MB easy=61KB
+[check] 2025-13-belgium: total=1.09MB easy=42KB
+[check] 2025-14-hungary: total=1.18MB easy=61KB
+[check] 2025-15-dutch: total=1.21MB easy=71KB
+[check] 2025-16-italian: total=0.91MB easy=46KB
+[check] 2025-17-azerbaijan: total=1.14MB easy=49KB
+[check] 2025-18-singapore: total=1.25MB easy=55KB
+[check] 2025-19-americas: total=1.11MB easy=47KB
+[check] 2025-20-mexico: total=1.14MB easy=64KB
+[check] 2025-21-brazil: total=1.07MB easy=75KB
+[check] 2025-22-las-vegas: total=0.90MB easy=41KB
+[check] 2025-23-qatar: total=1.05MB easy=56KB
+[check] 2025-24-abu-dhabi: total=1.12MB easy=63KB
+[check] 2026-15-italian: total=1.07MB easy=61KB
+[check] 2026-16-madrid: total=1.19MB easy=45KB
+[check] 2026-17-azerbaijan: total=1.20MB easy=51KB
+[check] 2026-18-malaysia: total=1.28MB easy=86KB
+[check] 2026-19-singapore: total=1.27MB easy=53KB
+[check] history: total=0.08MB easy=20KB

@@ -122,7 +122,8 @@
     "telemetry": true,
     "telemetryDrivers": [
      "NOR",
-     "VER"
+     "VER",
+     "RUS"
     ],
     "radio": true,
     "weather": true,
@@ -142,7 +143,8 @@
     "telemetry": true,
     "telemetryDrivers": [
      "PIA",
-     "NOR"
+     "NOR",
+     "RUS"
     ],
     "radio": true,
     "weather": true,
@@ -644,6 +646,7 @@
    "coverage": {
     "telemetry": true,
     "telemetryDrivers": [
+     "ANT",
      "VER",
      "NOR"
     ],
