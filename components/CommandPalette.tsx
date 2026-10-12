@@ -28,8 +28,8 @@ function PaletteInner() {
     if (stored) return;
     let live = true;
     (async () => {
-      const { firstRaceId } = await import("@/lib/first-race");
-      const id = await firstRaceId();
+      const { latestRaceId } = await import("@/lib/first-race");
+      const id = await latestRaceId();
       if (live && id) setResolved(id);
     })();
     return () => {
@@ -51,7 +51,6 @@ function PaletteInner() {
       { label: "Recap and share", hint: "watch", race: true, run: () => router.push(`/race/${raceId}/recap`) },
       { label: "Ask the AI", hint: "more", race: true, run: () => router.push(`/ask?race=${raceId}`) },
       { label: "Session explorer", hint: "more", race: false, run: () => router.push("/explorer") },
-      { label: "Live positions (beta)", hint: "watch", race: false, run: () => router.push("/live") },
       { label: "Telemetry lab", hint: "analyse", race: false, run: () => router.push("/telemetry") },
       { label: "Standings", hint: "people", race: false, run: () => router.push("/standings") },
       { label: "Methods and data limits", hint: "more", race: false, run: () => router.push("/methods") },

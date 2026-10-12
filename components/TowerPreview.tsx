@@ -17,8 +17,8 @@ export function TowerPreview() {
   useEffect(() => {
     let live = true;
     (async () => {
-      const { firstRaceId } = await import("@/lib/first-race");
-      const id = await firstRaceId();
+      const { latestRaceId } = await import("@/lib/first-race");
+      const id = await latestRaceId();
       if (!live || !id) return;
       setRaceId(id);
       const b = await loadRaceBundle(id);
@@ -112,8 +112,8 @@ export function HeroCtasLanding() {
   useEffect(() => {
     let live = true;
     (async () => {
-      const { firstRaceId } = await import("@/lib/first-race");
-      const rid = await firstRaceId();
+      const { latestRaceId } = await import("@/lib/first-race");
+      const rid = await latestRaceId();
       if (live) setId(rid);
     })();
     return () => {

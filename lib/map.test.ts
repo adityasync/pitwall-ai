@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { headingAt, trailAt, trailsAtT, xyAt, xyAtLinear } from "./map";
+import { headingAt, smoothOutline, splitTrailOnGaps, trailAt, trailsAtT, xyAt, xyAtLinear } from "./map";
 
 const ts = [0, 1, 2, 3, 4];
 const xs = [0, 10, 20, 30, 40];
@@ -55,5 +55,37 @@ describe("headingAt", () => {
     expect(h!).toBeGreaterThan(-Math.PI);
     const still = headingAt([5, 5, 5, 5, 5], [5, 5, 5, 5, 5], ts, 2);
     expect(still).toBeNull();
+  });
+});
+
+describe("smoothOutline", () => {  const square: [number, number][] = [[0, 0], [10, 0], [10, 10], [0, 10], [0, 0]];
+  it("passes through every MEASURED vertex", () => {
+    const out = smoothOutline(square, 40);
+    expect(out.length).toBe(40);
+    for (const v of square.slice(0, -1)) {
+      const hit = out.some((p) => Math.hypot(p[0] - v[0], p[1] - v[1]) < 1e-9);
+      expect(hit).toBe(true);
+    }
+  });
+  it("returns short outlines untouched", () => {
+    expect(smoothOutline([[0, 0], [1, 1]])).toHaveLength(2);
+  });
+});
+
+describe("splitTrailOnGaps", () => {
+  it("keeps a clean trail whole", () => {
+    const pts = [{ x: 0, y: 0 }, { x: 100, y: 0 }, { x: 200, y: 0 }];
+    expect(splitTrailOnGaps(pts)).toHaveLength(1);
+  });
+  it("breaks at feed-gap jumps and drops singletons", () => {
+    const pts = [{ x: 0, y: 0 }, { x: 100, y: 0 }, { x: 5000, y: 0 }, { x: 5100, y: 0 }, { x: 9000, y: 0 }];
+    const segs = splitTrailOnGaps(pts, 1000);
+    expect(segs).toHaveLength(2);
+    expect(segs[0]).toHaveLength(2);
+    expect(segs[1]).toHaveLength(2);
+  });
+  it("returns nothing for empty or single-point trails", () => {
+    expect(splitTrailOnGaps([])).toHaveLength(0);
+    expect(splitTrailOnGaps([{ x: 1, y: 2 }])).toHaveLength(0);
   });
 });

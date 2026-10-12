@@ -38,8 +38,8 @@ function AskPage() {
     let live = true;
     (async () => {
       if (raceId) return;
-      const { firstRaceId } = await import("@/lib/first-race");
-      const id = await firstRaceId();
+      const { latestRaceId } = await import("@/lib/first-race");
+      const id = await latestRaceId();
       if (live && id) setRaceId(id);
     })();
     return () => {

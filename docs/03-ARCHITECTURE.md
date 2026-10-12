@@ -55,8 +55,8 @@ One source of truth: `replayStore = { raceId, t (seconds since race start), play
 - Load `positions` and `track` for the Pro map; load `telemetry/<driver>.json` lazily when a driver is selected.
 - Gzip/brotli from Vercel. Target first interactive under 2 s on 4G for Easy mode.
 
-## Live mode (optional, behind a flag)
-If `NEXT_PUBLIC_LIVE=1` and an OpenF1 paid token exists, a thin client polls OpenF1 and feeds the same stores. Otherwise the app shows the "Live data is switched off" state and offers the replay. Do not block any release on this.
+## Live mode (removed 2026-10-12)
+Replay-first only: the `/live` scaffold was removed because the live feed needs a paid OpenF1 plan and only ever showed an empty state. Do not re-add live behind a flag without a working feed.
 
 ## Trust labels in code
 Every stat in `stats.json` and every evidence item has `trust: "MEASURED" | "DERIVED" | "ESTIMATE"`. `<TrustBadge>` renders it. A panel showing mixed trust shows each.

@@ -96,13 +96,6 @@ export default function Home() {
           <div className="relative">
             <RaceReplayHero />
           </div>
-          {/* floating chips */}
-          <div aria-hidden className="tnum pointer-events-none absolute -left-3 top-8 hidden rounded-full border border-white/10 bg-black/60 px-3 py-1.5 text-[10px] font-bold tracking-[0.2em] text-white backdrop-blur-xl lg:block">
-            ● DRS OPEN
-          </div>
-          <div aria-hidden className="tnum pointer-events-none absolute -right-2 bottom-16 hidden rounded-full border border-white/10 bg-black/60 px-3 py-1.5 text-[10px] font-bold tracking-[0.2em] text-[var(--good)] backdrop-blur-xl lg:block">
-            ▲ P2 → P1 · LAP 31
-          </div>
         </div>
       </section>
 

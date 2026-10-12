@@ -22,7 +22,9 @@ export function FeaturedRaces() {
     (async () => {
       const r = await loadJson<{ races: RaceEntry[] }>("index.json");
       if (!live || r.status !== "ready" || !r.data) return;
-      setRaces(r.data.races);
+      // Newest first — the landing list opens on the latest Grand Prix.
+      const ordered = [...r.data.races].sort((a, b) => (b.date ?? "").localeCompare(a.date ?? ""));
+      setRaces(ordered);
       const out: Record<string, RaceStats> = {};
       await Promise.all(
         r.data.races.map(async (race) => {

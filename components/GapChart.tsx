@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { memo, useMemo } from "react";
 import { indexAtT } from "@/lib/clock";
 
 export type GapSeries = {
@@ -9,8 +9,9 @@ export type GapSeries = {
 };
 
 /** Gap-to-leader chart: seconds behind the leader on every lap, per driver.
- *  Sampled from intervals.json at each lap start (DERIVED of MEASURED gaps). */
-export function GapChart({
+ *  Sampled from intervals.json at each lap start (DERIVED of MEASURED gaps).
+ *  Memoized: only the lap cursor moves during playback, and it changes rarely. */
+export const GapChart = memo(function GapChart({
   intervals,
   lapStarts,
   laps,
@@ -103,4 +104,4 @@ export function GapChart({
       </p>
     </div>
   );
-}
+});

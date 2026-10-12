@@ -472,10 +472,6 @@ def main() -> int:
             while j + 1 < len(loc_t) and abs(loc_t[j + 1] - t) <= abs(loc_t[j] - t):
                 j += 1
             xs[i], ys[i] = loc_x[j], loc_y[j]
-        first = not outline_done
-        if first:
-            track_outline = _smooth_outline(loc_x, loc_y, OUTLINE_POINTS, OUTLINE_SMOOTH)
-            outline_done = True
         tele_xy[code] = (car_t, xs, ys)
         # per-lap resample every 10 m (.get channels: missing key -> NaN -> interpolated)
         tele_laps, ref = _resample_telemetry(code, laps.get(code, []), car_t,
@@ -484,9 +480,19 @@ def main() -> int:
                                         np.array([r.get("brake") for r in car], dtype=float),
                                         np.array([r.get("n_gear") for r in car], dtype=float),
                                         np.array([r.get("drs") for r in car], dtype=float), xs, ys,
-                                        want_ref=first)
+                                        want_ref=not outline_done)
         if ref:
             ref_geom = ref
+        if not outline_done:
+            # Outline from ONE clean lap (the reference fastest lap), never the
+            # whole-race trace: lap-to-lap jumps + pit detours draw a scribble.
+            # Closed into a loop so start/finish meet.
+            rx, ry = np.asarray(ref["x"], dtype=float), np.asarray(ref["y"], dtype=float) \
+                if ref and len(ref.get("x", [])) >= 30 else (loc_x, loc_y)
+            track_outline = _smooth_outline(rx, ry, OUTLINE_POINTS, OUTLINE_SMOOTH)
+            if track_outline:
+                track_outline.append([track_outline[0][0], track_outline[0][1]])
+            outline_done = True
         (odir / "telemetry" / f"{code}.json").write_text(json.dumps(tele_laps), encoding="utf-8")
         kept_tele.append(code)
     tele_codes = kept_tele
@@ -713,15 +719,17 @@ def _resample_telemetry(code, laps_of_driver, car_t, speed, throttle, brake, gea
 
 def _smooth_outline(loc_x, loc_y, target: int, window: int) -> list:
     """Moving-average x/y then stride to target points.
-    Kills OpenF1 location jitter so the SVG reads as one clean ribbon."""
+    Kills OpenF1 location jitter so the SVG reads as one clean ribbon.
+    Edge-padded (not mode="same"): zero-padding would drag the first/last
+    points toward (0,0), drawing a fake detour at start/finish."""
     import numpy as _np
     w = max(1, int(window))
-    if len(loc_x) > w:
+    sx, sy = _np.asarray(loc_x, dtype=float), _np.asarray(loc_y, dtype=float)
+    if len(sx) > w:
         k = _np.ones(w) / w
-        sx = _np.convolve(_np.asarray(loc_x, dtype=float), k, mode="same")
-        sy = _np.convolve(_np.asarray(loc_y, dtype=float), k, mode="same")
-    else:
-        sx, sy = loc_x, loc_y
+        p = w // 2
+        sx = _np.convolve(_np.pad(sx, (p, p), mode="edge"), k, mode="valid")
+        sy = _np.convolve(_np.pad(sy, (p, p), mode="edge"), k, mode="valid")
     step = max(1, len(sx) // target)
     return [[float(x), float(y)] for x, y in zip(sx[::step], sy[::step])]
 

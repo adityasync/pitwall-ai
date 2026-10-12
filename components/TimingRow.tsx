@@ -1,5 +1,7 @@
-import type { ReactNode } from "react";
+import { memo } from "react";
 import { fmtGap } from "@/lib/format";
+import { SectorCells } from "@/components/SectorCells";
+import type { LapLike, SectorBests } from "@/lib/timing";
 
 export const TYRE_STYLE: Record<string, { bg: string; fg: string; letter: string }> = {
   SOFT: { bg: "#DA291C", fg: "#fff", letter: "S" },
@@ -46,7 +48,11 @@ export function TyreBars({ health }: { health: number | null }) {
   );
 }
 
-export function TimingRow({
+/** One timing-tower row. Memoized on primitive + stable-object props so the
+ *  60 fps replay clock skips rows whose values did not change. Sector cells
+ *  take data (not elements) for the same reason — element identity would
+ *  defeat the memo on every frame. */
+export const TimingRow = memo(function TimingRow({
   pos,
   teamColour,
   code,
@@ -56,7 +62,9 @@ export function TimingRow({
   trend,
   onSelect,
   selected,
-  sectors,
+  sectorRow,
+  sectorPersonal,
+  sectorSession,
   status,
   dense,
   flash,
@@ -70,10 +78,12 @@ export function TimingRow({
   age: number | null;
   /** positions gained (+) / lost (−) vs grid, null when unknown */
   trend: number | null;
-  onSelect?: () => void;
+  onSelect?: (code: string) => void;
   selected?: boolean;
-  /** last-lap sector mini-cells (xl screens only) */
-  sectors?: ReactNode;
+  /** last-lap sector mini-cells — data, not elements (see above) */
+  sectorRow?: LapLike | null;
+  sectorPersonal?: SectorBests["personal"][string];
+  sectorSession?: SectorBests["session"];
   /** PIT when in the pit lane, DRS when within 1 s of the car ahead */
   status?: "PIT" | "DRS" | null;
   /** compact rows for the mission-control rail */
@@ -102,7 +112,11 @@ export function TimingRow({
         </span>
       )}
       <span className="tnum min-w-0 flex-1" />
-      {sectors}
+      {sectorSession && (
+        <span className="flex basis-full justify-start pl-[54px]">
+          <SectorCells row={sectorRow ?? null} personal={sectorPersonal} session={sectorSession} />
+        </span>
+      )}
       {trend != null && trend !== 0 && (
         <span
           className="tnum shrink-0 text-xs font-bold"
@@ -132,13 +146,13 @@ export function TimingRow({
       }
     >
       <button
-        onClick={onSelect}
+        onClick={() => onSelect?.(code)}
         aria-pressed={selected}
         aria-label={`Select ${code}, position ${pos}`}
-        className={`flex w-full items-center gap-2.5 px-3 text-left hover:bg-[var(--raised)]/60 ${dense ? "py-1.5" : "py-2.5"}`}
+        className={`flex w-full flex-wrap items-center gap-2.5 gap-y-1 px-3 text-left hover:bg-[var(--raised)]/60 ${dense ? "py-1.5" : "py-2.5"}`}
       >
         {inner}
       </button>
     </li>
   );
-}
+});

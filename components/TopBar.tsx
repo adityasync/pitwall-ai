@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useUiStore } from "@/stores/uiStore";
@@ -84,9 +85,8 @@ export function ReplayBadge() {
   );
 }
 
-const PRIMARY: { href: string; label: string; live?: boolean }[] = [
+const PRIMARY: { href: string; label: string }[] = [
   { href: "/races", label: "Races" },
-  { href: "/live", label: "Live", live: true },
   { href: "/ask", label: "Ask" },
   { href: "/telemetry", label: "Telemetry" },
   { href: "/standings", label: "Standings" },
@@ -104,7 +104,7 @@ const OVERFLOW: { href: string; label: string; desc: string }[] = [
 ];
 
 const SHEET_GROUPS: { title: string; links: { href: string; label: string }[] }[] = [
-  { title: "Watch", links: [{ href: "/races", label: "Races" }, { href: "/live", label: "Live β" }, { href: "/follow", label: "Follow" }] },
+  { title: "Watch", links: [{ href: "/races", label: "Races" }, { href: "/follow", label: "Follow" }] },
   { title: "Analyse", links: [{ href: "/ask", label: "Ask" }, { href: "/telemetry", label: "Telemetry" }, { href: "/explorer", label: "Explorer" }, { href: "/export", label: "Export" }] },
   { title: "Sport", links: [{ href: "/standings", label: "Standings" }, { href: "/season", label: "Season" }, { href: "/drivers", label: "Drivers" }, { href: "/teams", label: "Teams" }, { href: "/circuits", label: "Circuits" }] },
   { title: "Project", links: [{ href: "/methods", label: "Methods" }] },
@@ -121,14 +121,11 @@ export function TopBar() {
     <header className="sticky top-0 z-50 border-b border-white/[0.07] bg-[#07070a]/78 backdrop-blur-2xl backdrop-saturate-150">
       <div className="mx-auto flex h-16 w-full max-w-[1440px] items-center gap-2 px-4 sm:gap-3 sm:px-6">
         <Link href="/" className="display group flex shrink-0 items-center gap-2.5 text-xl font-bold tracking-tight" aria-label="Pitwall.ai home">
-          <span className="relative grid h-8 w-8 place-items-center overflow-hidden rounded-[9px] bg-gradient-to-b from-[#ff2b2b] to-[#9d0400] shadow-[0_4px_20px_-2px_rgba(225,6,0,0.7)]">
-            <span className="display text-[15px] font-bold italic text-white">P</span>
-            <span className="absolute inset-x-2 bottom-1 h-px bg-white/60" aria-hidden />
-          </span>
+          <Image src="/logo-mark.svg" alt="" aria-hidden width={32} height={32} className="h-8 w-8" />
           <span className="hidden italic sm:inline">pitwall<span className="text-[var(--accent)]">.ai</span></span>
         </Link>
 
-        {/* desktop primary nav — 5 items, no shouting group labels */}
+        {/* desktop primary nav — 4 items, no shouting group labels */}
         <nav aria-label="Primary" className="ml-2 hidden items-center gap-0.5 lg:flex">
           {PRIMARY.map((l) => {
             const active = isActive(l.href);
@@ -141,15 +138,7 @@ export function TopBar() {
                   active ? "text-white" : "text-[var(--muted)] hover:text-white"
                 }`}
               >
-                {l.live && (
-                  <span aria-hidden className={`h-1.5 w-1.5 rounded-full ${active ? "bg-[#ff2b2b]" : "bg-[var(--faint)]"}`} />
-                )}
                 {l.label}
-                {l.live && (
-                  <span className="tnum rounded-full border border-[rgba(225,6,0,0.5)] bg-[rgba(225,6,0,0.14)] px-1.5 py-px text-[9px] font-bold tracking-widest text-[#ff7a7a]">
-                    β
-                  </span>
-                )}
                 <span
                   aria-hidden
                   className={`absolute inset-x-3.5 -bottom-[13px] h-[2px] rounded-full bg-gradient-to-r from-[#ff2b2b] to-[#ff7a5c] transition-all duration-300 ${

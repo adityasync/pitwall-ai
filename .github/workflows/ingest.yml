@@ -48,6 +48,13 @@ jobs:
         if: github.event_name != 'workflow_dispatch' || inputs.spec == ''
         run: |
           set -eo pipefail
+          # retry quali-only gaps first (cheap; heals e.g. Baku 2025 if data appears)
+          python pipeline/find_new.py --quali-gaps > /tmp/qg.txt
+          while read -r year round; do
+            [ -z "$year" ] && continue
+            echo "=== quali retry $year round $round ==="
+            python pipeline/build_quali.py "$year" "$round" || echo "quali still missing, continuing"
+          done < /tmp/qg.txt
           python pipeline/find_new.py --max-new 2 > /tmp/new.txt
           while read -r year round; do
             [ -z "$year" ] && continue

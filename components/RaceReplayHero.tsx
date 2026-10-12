@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { indexAtT } from "@/lib/clock";
 import { fmtLapTime } from "@/lib/format";
+import { trailAt } from "@/lib/map";
 import { loadRaceBundle, type RaceBundle } from "@/lib/race";
 import { TrackMap, type MapDot } from "@/components/TrackMap";
 import { TyreDot } from "@/components/TimingRow";
@@ -18,8 +19,8 @@ export function RaceReplayHero() {
   useEffect(() => {
     let live = true;
     (async () => {
-      const { firstRaceId } = await import("@/lib/first-race");
-      const id = await firstRaceId();
+      const { latestRaceId } = await import("@/lib/first-race");
+      const id = await latestRaceId();
       if (!live || !id) return;
       setRaceId(id);
       const b = await loadRaceBundle(id);
@@ -60,7 +61,18 @@ export function RaceReplayHero() {
       .filter((r) => r.pos != null)
       .sort((a, b) => (a.pos as number) - (b.pos as number));
     const overtakes = bundle.moments.filter((m) => m.type === "overtake").length;
-    return { rows: rows.slice(0, 10), dots, at, laps, name: bundle.meta.name, overtakes, fastest: bundle.stats?.fastestLap };
+    const leader = rows.length > 0 ? rows[0].d.code : null;
+    // Leader-only motion trail (DERIVED presentation) — one ribbon of motion,
+    // never the whole-field spaghetti the map filter was built to prevent.
+    let trails: Record<string, { x: number; y: number }[]> | null = null;
+    if (leader) {
+      const s = bundle.positions.drivers[leader];
+      if (s?.x && s?.y) {
+        const pts = trailAt(s.x, s.y, bundle.positions.t, t, 12, 12);
+        if (pts.length >= 2) trails = { [leader]: pts };
+      }
+    }
+    return { rows: rows.slice(0, 10), dots, trails, leader, at, laps, name: bundle.meta.name, overtakes, fastest: bundle.stats?.fastestLap };
   }, [bundle, atLap]);
 
   return (
@@ -95,27 +107,13 @@ export function RaceReplayHero() {
 
       <div className="relative grid md:grid-cols-[1.15fr_248px]">
         <div className="relative min-w-0 border-b border-white/[0.07] p-3 md:border-b-0 md:border-r">
-          {/* motion-blur ghost behind the map */}
-          <div aria-hidden className="pointer-events-none absolute inset-3 overflow-hidden rounded-xl">
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(225,6,0,0.1),transparent_65%)]" />
-            <div className="speed-lines absolute inset-0 opacity-60" />
-          </div>
           {bundle?.track ? (
-            <div className="relative [filter:drop-shadow(0_0_24px_rgba(225,6,0,0.18))]">
-              <TrackMap track={bundle.track} dots={view?.dots ?? []} height={308} controls={false} />
+            <div className="relative">
+              <TrackMap track={bundle.track} dots={view?.dots ?? []} height={308} controls={false} minimal leader={view?.leader ?? null} trails={view?.trails ?? null} />
             </div>
           ) : (
             <div className="flex h-[308px] items-center justify-center text-sm text-[var(--muted)]">Loading track…</div>
           )}
-          {/* speed readout strip */}
-          <div className="tnum relative mt-2 flex items-center gap-4 overflow-hidden rounded-lg border border-white/[0.06] bg-black/40 px-3 py-2 text-[10px] tracking-[0.18em] text-[var(--muted)] backdrop-blur-md">
-            <span className="flex items-center gap-1.5">
-              <span className="inline-block h-1 w-8 bg-gradient-to-r from-transparent via-[#ff2b2b] to-transparent" aria-hidden />
-              312 KM/H
-            </span>
-            <span className="hidden sm:inline">DRS · OPEN</span>
-            <span className="ml-auto text-white/80">LIVE TRACE</span>
-          </div>
         </div>
         <ol className="relative">
           {view ? (
@@ -169,8 +167,8 @@ export function HeroCtasLanding() {
   useEffect(() => {
     let live = true;
     (async () => {
-      const { firstRaceId } = await import("@/lib/first-race");
-      const rid = await firstRaceId();
+      const { latestRaceId } = await import("@/lib/first-race");
+      const rid = await latestRaceId();
       if (live) setId(rid);
     })();
     return () => {

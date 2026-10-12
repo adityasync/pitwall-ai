@@ -15,6 +15,7 @@
     "data:quali": "python pipeline/build_quali.py",
     "data:all": "python pipeline/build_all.py",
     "data:history": "python pipeline/build_history.py",
+    "data:outlines": "python pipeline/rebuild_outlines.py",
     "data:check": "python pipeline/check_data.py"
   },
   "dependencies": {

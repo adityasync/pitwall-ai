@@ -38,7 +38,14 @@ export async function loadJson<T>(path: string): Promise<{ data: T | null; statu
   }
   try {
     const base = process.env.NEXT_PUBLIC_DATA_BASE ?? "";
-    const res = await fetch(`${base}/data/${path}`, { cache: "force-cache" });
+    // index.json is tiny and changes every deploy: always revalidate so new
+    // races appear without a hard refresh. Heavy race files stay cached.
+    // track.json is tiny too (~5 KB) and the pipeline rewrites outlines in
+    // place (rebuild_outlines.py) — a cached whole-race-trace scribble once
+    // survived a fix behind force-cache, so it always revalidates as well.
+    const fresh = path === "index.json" || path.endsWith("/track.json");
+    const init = fresh ? { cache: "no-store" as const } : { cache: "force-cache" as const };
+    const res = await fetch(`${base}/data/${path}`, init);
     return parse<T>(res);
   } catch {
     return { data: null, status: "error" };

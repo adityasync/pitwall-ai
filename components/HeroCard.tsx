@@ -11,8 +11,8 @@ export function HeroCtas() {
   useEffect(() => {
     let live = true;
     (async () => {
-      const { firstRaceId } = await import("@/lib/first-race");
-      const rid = await firstRaceId();
+      const { latestRaceId } = await import("@/lib/first-race");
+      const rid = await latestRaceId();
       if (live) setId(rid);
     })();
     return () => {

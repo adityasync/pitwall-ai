@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import type { Track } from "@/lib/types";
-
+import { smoothOutline, splitTrailOnGaps } from "@/lib/map";
 export type MapDot = {
   code: string;
   x: number;
@@ -14,11 +14,13 @@ export type MapDot = {
 
 export type MapTrail = { x: number; y: number };
 
-/** Track map v3 — same data (track.outline + dots), more racecraft:
- *  Catmull-Rom dots (see lib/map.ts), motion trails, tap-a-car select,
- *  zoom + follow, DRS rings + gap labels. All presentation is DERIVED;
- *  samples stay MEASURED. Raw location units differ per track — every size
- *  derives from the track's own bounding box. */
+/** Track map v6 — smooth AND thin. Coarse telemetry polygons (70–110 pts,
+ *  chords to 12% of span) are resampled through a closed Catmull-Rom spline
+ *  (lib/map.ts, through every MEASURED vertex) so the silhouette curves like
+ *  the authored pro vector sets. Constant 2px core + 8px halo via
+ *  vector-effect="non-scaling-stroke". Corner pins with bad coordinates
+ *  (>4% span off-loop) are dropped, survivors render subordinate to cars.
+ *  Trails render for focus cars only (max 4). */
 export function TrackMap({
   track,
   dots,
@@ -37,6 +39,8 @@ export function TrackMap({
   follow,
   onFollow = null,
   controls = true,
+  pulses = null,
+  minimal = false,
 }: {
   track: Track | null;
   dots: MapDot[];
@@ -59,6 +63,11 @@ export function TrackMap({
   follow?: string | null;
   onFollow?: ((code: string | null) => void) | null;
   controls?: boolean;
+  /** position-changers from moversAt() — expanding ring, synced with tower flash */
+  pulses?: Record<string, "up" | "down"> | null;
+  /** minimal furniture (hero/landing): no corner pins, no direction arrow,
+   *  no S/F caption — just the loop, the S/F tick and the cars. */
+  minimal?: boolean;
 }) {
   const [zoom, setZoom] = useState(1);
   // Follow is controlled when the parent passes `follow` (Easy/Pro/Live do);
@@ -77,10 +86,20 @@ export function TrackMap({
     const w = maxx - minx || 1;
     const h = maxy - miny || 1;
     const s = Math.max(w, h);
-    const pad = s * 0.12;
-    const pts = track.outline.map(([x, y]) => `${x},${-y}`).join(" ");
-    // start/finish: first outline sample + track direction from next samples
+    const pad = s * 0.16;
+    // Smooth the coarse telemetry polygon through a closed Catmull-Rom
+    // spline (lib/map.ts) — the curve passes through every MEASURED vertex,
+    // so this is presentation, not invention. Without it, chords up to 12%
+    // of the track span render as visible facets.
     const o = track.outline;
+    const loop = smoothOutline(o);
+    const ds: string[] = [];
+    for (let i = 0; i < loop.length; i++) {
+      ds.push(`${i === 0 ? "M" : "L"}${loop[i][0]},${-loop[i][1]}`);
+    }
+    ds.push("Z");
+    const d = ds.join(" ");
+    // start/finish: first outline sample + track direction from next samples
     const p0 = o[0];
     const p1 = o[Math.min(8, o.length - 1)];
     const dx = p1[0] - p0[0];
@@ -117,28 +136,27 @@ export function TrackMap({
       }
       return { x: track.outline[bi][0], y: -track.outline[bi][1] };
     };
-    const corners = (track.corners ?? []).map((c) => ({ ...c, p: nearest(c.x, c.y) }));
+    const corners = (track.corners ?? [])
+      .map((c) => ({ ...c, p: nearest(c.x, c.y) }))
+      // Drop corner pins whose source coordinates lie far from the rendered
+      // loop (>4% of track span) — bad data that otherwise floats in space.
+      // (p.y is SVG-space, negated — compare in raw space.)
+      .filter((c) => Math.hypot(c.p.x - c.x, -c.p.y - c.y) < s * 0.04);
     return {
       vb: `${minx - pad} ${-(maxy + pad)} ${w + pad * 2} ${h + pad * 2}`,
       baseW: w + pad * 2,
       baseH: h + pad * 2,
-      pts,
+      d,
       corners,
       start: { x: p0[0], y: -p0[1], x1: sfx1.x, y1: sfx1.y, x2: sfx2.x, y2: sfx2.y },
       arrow,
       u: {
-        casing: s * 0.016,
-        asphalt: s * 0.011,
-        core: s * 0.0022,
         zoneR: s * 0.018,
-        zoneW: s * 0.005,
-        cornerR: s * 0.016,
+        cornerR: s * 0.007,
         cornerFont: s * 0.013,
-        carR: s * 0.012,
-        carW: s * 0.0032,
+        carR: s * 0.0085,
         carLabelDy: s * 0.02,
         carFont: s * 0.018,
-        startW: s * 0.006,
         arrowL: s * 0.035,
       },
     };
@@ -184,7 +202,12 @@ export function TrackMap({
   const wy = al.ux;
 
   return (
-    <figure className="relative overflow-hidden rounded-xl border border-white/[0.07] bg-black/40 backdrop-blur-md">
+    <figure className="relative overflow-hidden rounded-xl border border-white/[0.06] bg-[#08080b]/80">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{ background: "radial-gradient(55% 45% at 50% 45%, rgba(255,255,255,0.05), transparent 70%)" }}
+      />
       {controls && (
         <div className="absolute right-2 top-2 z-10 flex gap-1">
           <button
@@ -244,21 +267,46 @@ export function TrackMap({
         role="img"
         aria-label={label ?? "Track map with car positions"}
       >
-        {/* asphalt: dark casing, mid fill, lit centre line */}
-        <polyline points={view.pts} fill="none" stroke="#000" strokeWidth={u.casing} strokeLinejoin="round" strokeLinecap="round" opacity={0.9} />
-        <polyline points={view.pts} fill="none" stroke="var(--border-strong)" strokeWidth={u.asphalt} strokeLinejoin="round" strokeLinecap="round" />
-        <polyline points={view.pts} fill="none" stroke="var(--text)" strokeWidth={u.core} strokeLinejoin="round" strokeLinecap="round" opacity={0.35} />
-        {/* start/finish */}
+        {/* Hollow pro outline — the technique the vector sets use:
+            a single centerline path, constant screen-pixel width via
+            vector-effect="non-scaling-stroke". Same 2px on every track,
+            at every zoom. Halo is a flat wide stroke, no blur filter. */}
+        <path
+          d={view.d}
+          fill="none"
+          stroke="#ffffff"
+          strokeWidth={8}
+          vectorEffect="non-scaling-stroke"
+          strokeLinejoin="round"
+          strokeLinecap="round"
+          opacity={0.07}
+        />
+        <path
+          d={view.d}
+          fill="none"
+          stroke="rgba(232,232,238,0.6)"
+          strokeWidth={2}
+          vectorEffect="non-scaling-stroke"
+          strokeLinejoin="round"
+          strokeLinecap="round"
+        />
+        {/* start/finish — single accent tick (+ caption unless minimal) */}
         <line x1={view.start.x1} y1={view.start.y1} x2={view.start.x2} y2={view.start.y2}
-          stroke="var(--text)" strokeWidth={u.startW} strokeLinecap="round" />
-        <text x={view.start.x} y={view.start.y - u.carLabelDy}
-          textAnchor="middle" fontSize={u.carFont * 0.8} fontWeight={700}
-          fill="var(--muted)" fontFamily="JetBrains Mono, monospace">S/F</text>
-        {/* direction arrow */}
-        <line x1={al.x} y1={al.y} x2={ax2} y2={ay2} stroke="var(--muted)" strokeWidth={u.startW} strokeLinecap="round" opacity={0.8} />
-        <polyline
-          points={`${ax2},${ay2} ${ax2 - al.ux * wl + wx * wl * 0.6},${ay2 - al.uy * wl + wy * wl * 0.6} ${ax2 - al.ux * wl - wx * wl * 0.6},${ay2 - al.uy * wl - wy * wl * 0.6}`}
-          fill="none" stroke="var(--muted)" strokeWidth={u.startW} strokeLinejoin="round" strokeLinecap="round" opacity={0.8} />
+          stroke="#ff2b2b" strokeWidth={2.5} vectorEffect="non-scaling-stroke" strokeLinecap="round" opacity={0.9} />
+        {!minimal && (
+          <text x={view.start.x} y={view.start.y - u.carLabelDy}
+            textAnchor="middle" fontSize={u.carFont * 0.62} fontWeight={700}
+            fill="rgba(255,255,255,0.45)" fontFamily="JetBrains Mono, monospace" letterSpacing="1">S/F</text>
+        )}
+        {/* direction arrow — whisper quiet, omitted when minimal */}
+        {!minimal && (
+          <>
+            <line x1={al.x} y1={al.y} x2={ax2} y2={ay2} stroke="rgba(255,255,255,0.35)" strokeWidth={1.5} vectorEffect="non-scaling-stroke" strokeLinecap="round" />
+            <polyline
+              points={`${ax2},${ay2} ${ax2 - al.ux * wl + wx * wl * 0.6},${ay2 - al.uy * wl + wy * wl * 0.6} ${ax2 - al.ux * wl - wx * wl * 0.6},${ay2 - al.uy * wl - wy * wl * 0.6}`}
+              fill="none" stroke="rgba(255,255,255,0.35)" strokeWidth={1.5} vectorEffect="non-scaling-stroke" strokeLinejoin="round" strokeLinecap="round" />
+          </>
+        )}
         {showZones &&
           (track?.brakingZones ?? []).map((z, i) => {
             const c = view.corners.find((c) => c.n === z.corner);
@@ -271,32 +319,52 @@ export function TrackMap({
                 r={u.zoneR}
                 fill="none"
                 stroke="var(--warn)"
-                strokeWidth={u.zoneW}
+                strokeWidth={1.5}
+                vectorEffect="non-scaling-stroke"
                 opacity={0.55}
-                strokeDasharray={`${u.zoneR * 0.4} ${u.zoneR * 0.3}`}
+                strokeDasharray="4 3"
               />
             );
           })}
-        {/* motion trails (DERIVED presentation, behind the cars) */}
+        {/* motion trails — only focus cars (selected / follow / leader / battle), max 4.
+            Rendering all 20 trails is what turned the map into spaghetti.
+            Segments split at feed gaps (splitTrailOnGaps) so a sample gap
+            never draws as a streak across the circuit. */}
         {trails &&
-          Object.entries(trails).map(([code, pts]) => {
-            if (!pts || pts.length < 2) return null;
+          Object.entries(trails)
+            .filter(([code]) => code === selected || code === followOn || code === leader || battleSet.has(code))
+            .slice(0, 4)
+            .flatMap(([code, pts]) => {
+              if (!pts || pts.length < 2) return [];
+              return splitTrailOnGaps(pts).map((seg, si) => (
+                <polyline
+                  key={`trail-${code}-${si}`}
+                  points={seg.map((p) => `${p.x},${-p.y}`).join(" ")}
+                  fill="none"
+                  stroke={colourOf.get(code) ?? "#fff"}
+                  strokeWidth={2}
+                  vectorEffect="non-scaling-stroke"
+                  strokeLinejoin="round"
+                  strokeLinecap="round"
+                  opacity={0.5}
+                />
+              ));
+            })}
+        {/* corners: whisper dots by default; numbered chips only when interactive; none when minimal */}
+        {!minimal && view.corners.map((c) => {
+          const active = selectedCorner === c.n;
+          if (!onCorner && !active) {
             return (
-              <polyline
-                key={`trail-${code}`}
-                points={pts.map((p) => `${p.x},${-p.y}`).join(" ")}
-                fill="none"
-                stroke={colourOf.get(code) ?? "#fff"}
-                strokeWidth={u.carW * 0.9}
-                strokeLinejoin="round"
-                strokeLinecap="round"
-                opacity={0.35}
+              <circle
+                key={c.n}
+                cx={c.p.x}
+                cy={c.p.y}
+                r={u.cornerR * 0.55}
+                fill="rgba(255,255,255,0.16)"
+                opacity={0.55}
               />
             );
-          })}
-        {/* corners: always visible, interactive in Pro */}
-        {view.corners.map((c) => {
-          const active = selectedCorner === c.n;
+          }
           const inner = (
             <>
               <circle
@@ -305,7 +373,8 @@ export function TrackMap({
                 r={u.cornerR}
                 fill={active ? "var(--accent)" : "var(--raised)"}
                 stroke={active ? "var(--accent)" : "var(--border-strong)"}
-                strokeWidth={u.cornerR * 0.22}
+                strokeWidth={1.5}
+                vectorEffect="non-scaling-stroke"
                 opacity={onCorner || active ? 1 : 0.75}
               />
               <text
@@ -351,24 +420,35 @@ export function TrackMap({
           const isFollow = d.code === followOn;
           const drs = drsSet.has(d.code);
           const gap = gapLabels?.[d.code];
+          const pulse = pulses?.[d.code] ?? null;
           const interactive = !!onSelect;
           const car = (
-            <g opacity={d.dim && !hot && !lead && !sel ? 0.45 : 1}>
+            <g opacity={d.dim && !hot && !lead && !sel ? 0.38 : 1}>
               {(hot || lead || sel || isFollow) && (
+                <circle cx={d.x} cy={-d.y} r={u.carR * 2.1} fill={d.colour} opacity={0.16} />
+              )}
+              {pulse && (
                 <circle cx={d.x} cy={-d.y} r={u.carR * 1.9} fill="none"
-                  stroke={sel || isFollow ? "var(--text)" : lead ? "var(--accent)" : d.colour} strokeWidth={u.carW} opacity={0.5} />
+                  className="map-pulse"
+                  vectorEffect="non-scaling-stroke"
+                  stroke={pulse === "up" ? "var(--good)" : "var(--bad)"} strokeWidth={2}>
+                  <title>{d.code} {pulse === "up" ? "gained a position ▲" : "lost a position ▼"}</title>
+                </circle>
               )}
               {drs && (
                 <circle cx={d.x} cy={-d.y} r={u.carR * 2.5} fill="none"
-                  stroke="var(--accent)" strokeWidth={u.carW * 0.8} opacity={0.85}
-                  strokeDasharray={`${u.carR * 0.7} ${u.carR * 0.5}`}>
+                  vectorEffect="non-scaling-stroke"
+                  stroke="var(--accent)" strokeWidth={1.5} opacity={0.85}
+                  strokeDasharray="4 3">
                   <title>{d.code} has DRS</title>
                 </circle>
               )}
-              <circle cx={d.x} cy={-d.y} r={hot || lead || sel ? u.carR * 1.15 : u.carR}
-                fill={d.colour} stroke="var(--bg)" strokeWidth={u.carW}>
-                <title>{d.code}{drs ? " · DRS" : ""}{gap ? ` · ${gap}` : ""}</title>
+              <circle cx={d.x} cy={-d.y} r={hot || lead || sel ? u.carR * 1.3 : u.carR}
+                fill={d.colour} stroke="#08080b" strokeWidth={2} vectorEffect="non-scaling-stroke">
+                <title>{d.code}{drs ? " · DRS" : ""}{gap ? ` · ${gap}` : ""}{pulse === "up" ? " · gained a position ▲" : pulse === "down" ? " · lost a position ▼" : ""}</title>
               </circle>
+              <circle cx={d.x} cy={-d.y} r={hot || lead || sel ? u.carR * 1.3 : u.carR}
+                fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth={0.75} vectorEffect="non-scaling-stroke" style={{ pointerEvents: "none" }} />
               {/* fat invisible hit area for touch */}
               {interactive && (
                 <circle cx={d.x} cy={-d.y} r={u.carR * 2.6} fill="transparent" />
@@ -429,7 +509,7 @@ export function TrackMap({
               }}
               tabIndex={0}
               role="button"
-              aria-label={`Select ${d.code}${drs ? ", DRS open" : ""}${gap ? `, gap ${gap}` : ""}`}
+              aria-label={`Select ${d.code}${drs ? ", DRS open" : ""}${gap ? `, gap ${gap}` : ""}${pulse === "up" ? ", just gained a position" : pulse === "down" ? ", just lost a position" : ""}`}
               aria-pressed={sel}
               style={{ cursor: "pointer" }}
             >

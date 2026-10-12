@@ -11,7 +11,6 @@
 | `ZAI_API_KEY` | server only | Z.ai key |
 | `ZAI_BASE_URL` | server only | provider base URL (check docs) |
 | `ZAI_MODEL` | server only | model id for explanations and chat |
-| `NEXT_PUBLIC_LIVE` | client | `0` by default; `1` enables the live flag |
 | `OPENF1_TOKEN` | server, optional | paid live access |
 | `NEXT_PUBLIC_SITE_URL` | client | for share cards and links |
 

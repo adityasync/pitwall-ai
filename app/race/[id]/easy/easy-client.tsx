@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useReplayStore } from "@/stores/replayStore";
 import { useSelectionStore } from "@/stores/selectionStore";
 import { useUiStore } from "@/stores/uiStore";
-import { indexAtT, lapAtT } from "@/lib/clock";
-import { dotsAtT, trailsAtT } from "@/lib/map";
+import { commitIntervalMs, indexAtT, lapAtT } from "@/lib/clock";
+import { dotsAtT, moversAt, trailsAtT } from "@/lib/map";
 import { DRS_GAP_S, SPEEDS, TYRE_HEALTH_LAPS } from "@/lib/config";
 import { GLOSSARY } from "@/lib/glossary";
 import { loadRaceBundle, type RaceBundle } from "@/lib/race";
@@ -22,14 +22,27 @@ function seriesAt<T>(ts: number[], vs: T[], t: number): T | null {
 export function EasyClient({ raceId }: { raceId: string }) {
   const router = useRouter();
   const search = useSearchParams();
-  const { t, playing, speed, lap, set, play, pause } = useReplayStore();
-  const { momentId, set: setSel } = useSelectionStore();
-  const { lang, set: setUi } = useUiStore();
+  // Granular subscriptions: the 10 Hz clock only re-renders what reads t.
+  const t = useReplayStore((s) => s.t);
+  const playing = useReplayStore((s) => s.playing);
+  const speed = useReplayStore((s) => s.speed);
+  const lap = useReplayStore((s) => s.lap);
+  const set = useReplayStore((s) => s.set);
+  const play = useReplayStore((s) => s.play);
+  const pause = useReplayStore((s) => s.pause);
+  const momentId = useSelectionStore((s) => s.momentId);
+  const setSel = useSelectionStore((s) => s.set);
+  const lang = useUiStore((s) => s.lang);
+  const setUi = useUiStore((s) => s.set);
   const [bundle, setBundle] = useState<RaceBundle | null>(null);
   const [term, setTerm] = useState("DRS");
   const [selected, setSelected] = useState<string | null>(null);
   const [follow, setFollow] = useState<string | null>(null);
   const aiRef = useRef<HTMLElement>(null);
+  const toggleSelect = useCallback(
+    (c: string) => setSelected((s) => (s === c ? null : c)),
+    []
+  );
   const mapRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -66,22 +79,28 @@ export function EasyClient({ raceId }: { raceId: string }) {
     if (!playing || !meta || !positions) return;
     let raf = 0;
     let last = performance.now();
+    let committed = 0;
     const tick = (now: number) => {
       const dt = (now - last) / 1000;
       last = now;
       const cur = useReplayStore.getState();
       const nt = Math.min(cur.t + dt * cur.speed, endT);
-      cur.set({ t: nt, lap: lapAtT(meta.lapStarts, nt), playing: nt < endT });
+      // Throttled commits — see commitIntervalMs. Same smooth dots, ~6x fewer renders.
+      if (now - committed >= commitIntervalMs(cur.speed) || nt >= endT) {
+        committed = now;
+        cur.set({ t: nt, lap: lapAtT(meta.lapStarts, nt), playing: nt < endT });
+      }
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
   }, [playing, meta, positions, endT]);
 
-  const scrub = (nt: number) => {
-    if (!meta) return;
-    set({ t: nt, lap: lapAtT(meta.lapStarts, nt) });
-  };
+  const scrub = useCallback((nt: number) => {
+    const starts = useReplayStore.getState().lapStarts;
+    if (starts.length === 0) return;
+    useReplayStore.getState().set({ t: nt, lap: lapAtT(starts, nt) });
+  }, []);
 
   const scrollTo = (el: HTMLElement | null) => {
     if (!el) return;
@@ -89,15 +108,15 @@ export function EasyClient({ raceId }: { raceId: string }) {
     el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "nearest" });
   };
 
-  const openMoment = (id: string) => {
+  const openMoment = useCallback((id: string) => {
     const m = bundle?.moments.find((x) => x.id === id);
-    if (!m || !meta) return;
+    if (!m) return;
     scrub(m.t);
     setSel({ momentId: id, drivers: m.drivers });
     const d = m.drivers.length > 0 ? `&d=${m.drivers.join(",")}` : "";
     router.replace(`/race/${raceId}/easy?t=${Math.round(m.t)}&m=${id}${d}`, { scroll: false });
     scrollTo(aiRef.current);
-  };
+  }, [bundle, scrub, setSel, router, raceId]);
 
   const tower = useMemo(() => {
     if (!bundle || !positions || !meta) return [];
@@ -219,6 +238,10 @@ export function EasyClient({ raceId }: { raceId: string }) {
     }
     return out;
   }, [tower, battle]);
+  const pulses = useMemo(
+    () => (positions ? moversAt(positions, t) : null),
+    [positions, t]
+  );
 
   const driveOfDay = useMemo(() => {
     if (tower.length === 0) return null;
@@ -353,12 +376,13 @@ export function EasyClient({ raceId }: { raceId: string }) {
             battle={battle ? [battle.a, battle.b].filter(Boolean) : []}
             leader={leaderCode}
             trails={trails}
-            onSelect={(c) => setSelected((s) => (s === c ? null : c))}
+            onSelect={toggleSelect}
             selected={selected}
             drsCodes={drsCodes}
             gapLabels={gapLabels}
             follow={follow}
             onFollow={setFollow}
+            pulses={pulses}
             label={
               battle && battle.gapNow != null && battle.gapNow < DRS_GAP_S
                 ? "Straight ahead: DRS zone — under a second, a pass may be coming. Dashed ring = DRS."

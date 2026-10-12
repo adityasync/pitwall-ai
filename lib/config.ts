@@ -28,6 +28,12 @@ export const BATTLE_GAP_S = 2.0;
 // health = 1 − age/TYRE_HEALTH_LAPS, labelled ESTIMATE with the footnote.
 export const TYRE_HEALTH_LAPS = 45;
 
+// MODEL — map trail gap cutoff (track units ≈7/m): an F1 car covers at most
+// ~700u in the ~1 s between trail samples. Jumps beyond this are OpenF1 feed
+// sample gaps (both endpoints verified on-track) — drawing a line across one
+// paints a fake streak across the map, so trail segments split there.
+export const MAP_TRAIL_MAX_JUMP_U = 1000;
+
 // SPEC docs/05 — telemetry resampled every 5–10 m of lap distance.
 export const LAP_RESAMPLE_M = 10;
 

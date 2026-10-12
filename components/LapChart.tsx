@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { memo, useMemo } from "react";
 import { indexAtT } from "@/lib/clock";
 
 export type PosSeries = {
@@ -9,8 +9,9 @@ export type PosSeries = {
 };
 
 /** Lap chart: position (P1 top) vs lap number for every driver, team colours.
- *  Sampled from positions.json at each lap start (DERIVED trace of MEASURED data). */
-export function LapChart({
+ *  Sampled from positions.json at each lap start (DERIVED trace of MEASURED data).
+ *  Memoized: only the lap cursor moves during playback, and it changes rarely. */
+export const LapChart = memo(function LapChart({
   positions,
   lapStarts,
   laps,
@@ -102,4 +103,4 @@ export function LapChart({
       />
     </svg>
   );
-}
+});

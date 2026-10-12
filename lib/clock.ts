@@ -25,3 +25,12 @@ export function indexAtT(times: readonly number[], t: number): number {
 export function lapAtT(lapStarts: readonly number[], t: number): number {
   return indexAtT(lapStarts, t) + 1;
 }
+
+/** Minimum ms between replay-clock commits at a given playback speed.
+ *  Tower text, gaps and dots all resolve to ≥1 s data, so committing every
+ *  animation frame only burns renders. 1x commits every 120 ms (0.12 s of
+ *  race time — visually smooth); 10x+ commits every frame. */
+export function commitIntervalMs(speed: number): number {
+  if (!Number.isFinite(speed) || speed <= 0) return 120;
+  return Math.max(16, Math.round(120 / speed));
+}

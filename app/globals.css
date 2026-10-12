@@ -283,6 +283,16 @@ body::after {
 .blur-in-3 { animation-delay: 0.23s; }
 .blur-in-4 { animation-delay: 0.32s; }
 
+/* thin dark scrollbar for the timing tower rail (no white/grey block) */
+.nice-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 77, 94, 0.45) transparent;
+}
+.nice-scroll::-webkit-scrollbar { width: 6px; }
+.nice-scroll::-webkit-scrollbar-track { background: transparent; }
+.nice-scroll::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.14); border-radius: 999px; }
+.nice-scroll::-webkit-scrollbar-thumb:hover { background: rgba(255, 77, 94, 0.55); }
+
 /* tower rows: slide + speed glow on hover */
 .tower-row {
   position: relative;
@@ -301,6 +311,18 @@ body::after {
 }
 .tower-row:hover { background: rgba(255, 255, 255, 0.045); transform: translateX(4px); }
 .tower-row:hover::before { width: 56px; }
+
+/* Map overtake pulse. Mounts when a car enters the movers set, plays once,
+ *  unmounts when the window passes. Motion + colour + ▲▼ text. */
+@keyframes mappulse {
+  0% { opacity: 0.95; transform: scale(0.7); }
+  100% { opacity: 0; transform: scale(2.1); }
+}
+.map-pulse {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: mappulse 1.1s ease-out 1;
+}
 
 /* Tower position-change flash. */
 @keyframes rowflash {

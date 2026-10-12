@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 48" role="img" aria-labelledby="pw-logo-title">
   <title id="pw-logo-title">pitwall.ai</title>
   <rect x="14" y="10" width="7" height="28" rx="2" fill="#FFFFFF"/>
-  <rect x="27" y="16" width="7" height="22" rx="2" fill="#2DE2E6"/>
-  <text x="46" y="34" font-family="'Space Grotesk','Arial',sans-serif" font-weight="700" font-size="30" letter-spacing="0" fill="#FFFFFF">pitwall<tspan fill="#2DE2E6">.ai</tspan></text>
+  <rect x="27" y="16" width="7" height="22" rx="2" fill="#FF4D5E"/>
+  <text x="46" y="34" font-family="'Space Grotesk','Arial',sans-serif" font-weight="700" font-size="30" letter-spacing="0" fill="#FFFFFF">pitwall<tspan fill="#FF4D5E">.ai</tspan></text>
 </svg>

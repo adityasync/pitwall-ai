@@ -1,8 +1,11 @@
+import { memo } from "react";
 import { sectorTone, type LapLike, type SectorBests } from "@/lib/timing";
 
 /** Last-lap sector mini-cells for the timing tower: purple = session best,
- *  green = personal best, with text labels (never colour-only). */
-export function SectorCells({
+ *  green = personal best, with text labels (never colour-only).
+ *  Memoized — row objects come straight from the bundle, so identity is
+ *  stable across replay ticks until the car completes another lap. */
+export const SectorCells = memo(function SectorCells({
   row,
   personal,
   session,
@@ -11,9 +14,9 @@ export function SectorCells({
   personal: SectorBests["personal"][string] | undefined;
   session: SectorBests["session"];
 }) {
-  if (!row) return <span className="tnum hidden text-xs text-[var(--faint)] xl:inline">—</span>;
+  if (!row) return <span className="tnum text-xs text-[var(--faint)]">—</span>;
   return (
-    <span className="tnum hidden items-center gap-1 text-xs xl:inline-flex" title={`Lap ${row.lap} sectors${row.pitLane ? " (pit lane)" : ""}`}>
+    <span className="tnum inline-flex items-center gap-1 text-xs" title={`Lap ${row.lap} sectors${row.pitLane ? " (pit lane)" : ""}`}>
       {(["s1", "s2", "s3"] as const).map((k) => {
         const v = row[k];
         const tone = sectorTone(v, personal?.[k] ?? null, session[k]);
@@ -35,4 +38,4 @@ export function SectorCells({
       })}
     </span>
   );
-}
+});
