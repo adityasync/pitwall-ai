@@ -75,8 +75,14 @@ def main() -> int:
             cwd=str(ROOT), capture_output=True, text=True,
         )
         log.write(r.stdout + r.stderr)
+        check_ok = r.returncode == 0
     print(f"[backfill] {args.year} done. failed={failed or 'none'}", flush=True)
-    return 1 if failed else 0
+    # partial success still commits (failures stay listed above and ride the
+    # next run). Only fail loudly if NOTHING succeeded or sizes blew the budget
+    # — otherwise one bad round (e.g. Baku quali 404) vetoes 11 good ones.
+    if not check_ok:
+        return 1
+    return 0 if len(rounds) > len(failed) else 1
 
 
 if __name__ == "__main__":

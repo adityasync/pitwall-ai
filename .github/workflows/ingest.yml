@@ -60,6 +60,9 @@ jobs:
         if: github.event_name == 'workflow_dispatch' && inputs.spec != ''
         run: python pipeline/backfill.py ${{ inputs.spec }}
       - name: Commit fresh data
+        # runs on step failure too: a red build with 11 good races must still
+        # commit them (partial race dirs are unindexed, invisible, self-heal).
+        if: success() || failure()
         run: |
           git config user.name "pitwall-ingest"
           git config user.email "pitwall-ingest@users.noreply.github.com"
