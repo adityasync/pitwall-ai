@@ -68,6 +68,7 @@ export const TimingRow = memo(function TimingRow({
   status,
   dense,
   flash,
+  health,
 }: {
   pos: number;
   teamColour: string;
@@ -90,6 +91,8 @@ export const TimingRow = memo(function TimingRow({
   dense?: boolean;
   /** position changed since last render — flash, no remount */
   flash?: boolean;
+  /** 0..1 tyre-health estimate (Easy tower). Renders bars + age label. */
+  health?: number | null;
 }) {
   const inner = (
     <>
@@ -127,11 +130,19 @@ export const TimingRow = memo(function TimingRow({
         </span>
       )}
       <TyreDot compound={tyre} age={age} />
+      {health !== undefined && (
+        <span className="flex shrink-0 items-center gap-1.5">
+          <TyreBars health={health} />
+          <span className="tnum text-[11px] text-[var(--muted)]" title="Tyre age in laps (ESTIMATE health)">
+            {age != null ? `${age}L` : ""}
+          </span>
+        </span>
+      )}
     </>
   );
   if (!onSelect) {
     return (
-      <li className="flex items-center gap-3 border-b border-[var(--border)] bg-[var(--panel)] px-4 py-2.5 transition-colors last:border-0 hover:bg-[var(--raised)]/60">
+      <li className="flex min-h-[44px] items-center gap-3 border-b border-[var(--border)] bg-[var(--panel)] px-4 py-2.5 transition-colors last:border-0 hover:bg-[var(--raised)]/60">
         {inner}
       </li>
     );
@@ -149,7 +160,7 @@ export const TimingRow = memo(function TimingRow({
         onClick={() => onSelect?.(code)}
         aria-pressed={selected}
         aria-label={`Select ${code}, position ${pos}`}
-        className={`flex w-full flex-wrap items-center gap-2.5 gap-y-1 px-3 text-left hover:bg-[var(--raised)]/60 ${dense ? "py-1.5" : "py-2.5"}`}
+        className={`flex min-h-[44px] w-full flex-wrap items-center gap-2.5 gap-y-1 px-3 text-left hover:bg-[var(--raised)]/60 ${dense ? "py-1.5" : "py-2.5"}`}
       >
         {inner}
       </button>

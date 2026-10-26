@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { headingAt, smoothOutline, splitTrailOnGaps, trailAt, trailsAtT, xyAt, xyAtLinear } from "./map";
+import { headingAt, moversAt, smoothOutline, splitTrailOnGaps, trailAt, trailsAtT, xyAt, xyAtLinear } from "./map";
 
 const ts = [0, 1, 2, 3, 4];
 const xs = [0, 10, 20, 30, 40];
@@ -87,5 +87,29 @@ describe("splitTrailOnGaps", () => {
   it("returns nothing for empty or single-point trails", () => {
     expect(splitTrailOnGaps([])).toHaveLength(0);
     expect(splitTrailOnGaps([{ x: 1, y: 2 }])).toHaveLength(0);
+  });
+});
+
+describe("moversAt", () => {
+  // pos sampled each second: NOR P3 -> P2 between t=2 and t=3, VER steady P1.
+  const positions = {
+    hz: 1,
+    t: [0, 1, 2, 3, 4],
+    drivers: {
+      NOR: { pos: [3, 3, 3, 2, 2] },
+      VER: { pos: [1, 1, 1, 1, 1] },
+      DNF: { pos: [5, 5, null, null, null] },
+    },
+  };
+  it("flags gainers up and losers down inside the window", () => {
+    const m = moversAt(positions, 4, 3);
+    expect(m.NOR).toBe("up");
+    expect(m.VER).toBeUndefined();
+  });
+  it("is quiet when nobody changed in the window", () => {
+    expect(moversAt(positions, 2, 3)).toEqual({});
+  });
+  it("ignores drivers with null positions", () => {
+    expect(moversAt(positions, 4, 3).DNF).toBeUndefined();
   });
 });

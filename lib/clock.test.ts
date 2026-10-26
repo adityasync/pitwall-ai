@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { indexAtT, lapAtT } from "./clock";
+import { commitIntervalMs, indexAtT, lapAtT } from "./clock";
 
 describe("indexAtT", () => {
   it("returns -1 before the first sample", () => {
@@ -18,5 +18,17 @@ describe("lapAtT", () => {
     expect(lapAtT([0, 95, 190], 0)).toBe(1);
     expect(lapAtT([0, 95, 190], 94.9)).toBe(1);
     expect(lapAtT([0, 95, 190], 95)).toBe(2);
+  });
+});
+
+describe("commitIntervalMs", () => {
+  it("throttles slow speeds, never below one frame", () => {
+    expect(commitIntervalMs(1)).toBe(120);
+    expect(commitIntervalMs(2)).toBe(60);
+    expect(commitIntervalMs(30)).toBe(16);
+  });
+  it("falls back to 120 ms for junk input", () => {
+    expect(commitIntervalMs(0)).toBe(120);
+    expect(commitIntervalMs(NaN)).toBe(120);
   });
 });
