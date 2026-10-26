@@ -61,15 +61,25 @@ html {
 }
 
 body {
-  background:
-    radial-gradient(1200px 600px at 85% -5%, rgba(225, 6, 0, 0.14), transparent 60%),
-    radial-gradient(900px 500px at 8% 12%, rgba(99, 102, 255, 0.07), transparent 60%),
-    radial-gradient(1000px 700px at 50% 110%, rgba(225, 6, 0, 0.06), transparent 60%),
-    var(--bg);
+  background: var(--bg);
   color: var(--text);
   font-family: var(--font-body), system-ui, sans-serif;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+}
+
+/* Fixed atmosphere: the red/blue glow belongs to the viewport, not the
+   document, so long pages keep the same lighting instead of going flat
+   black once the top of the page has scrolled away. */
+.atmosphere {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(1200px 600px at 85% -5%, rgba(225, 6, 0, 0.14), transparent 60%),
+    radial-gradient(900px 500px at 8% 12%, rgba(99, 102, 255, 0.07), transparent 60%),
+    radial-gradient(1000px 700px at 50% 110%, rgba(225, 6, 0, 0.06), transparent 60%);
 }
 
 /* film grain + faint grid, fixed, pointer-transparent */

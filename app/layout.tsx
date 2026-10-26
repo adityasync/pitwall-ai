@@ -42,6 +42,7 @@ export default function RootLayout({
       className={`${display.variable} ${body.variable} ${data.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-[var(--bg)] text-[var(--text)]">
+        <div aria-hidden="true" className="atmosphere" />
         <a href="#content" className="skip-link">
           Skip to content
         </a>
