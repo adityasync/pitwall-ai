@@ -738,6 +738,46 @@
    },
    "featured": true,
    "story": "ANT passes HAM for P3; NOR passes HAM for P4"
+  },
+  {
+   "id": "2026-20-americas",
+   "year": 2026,
+   "round": 20,
+   "name": "United States Grand Prix",
+   "circuit": "Austin",
+   "date": "2026-10-25",
+   "coverage": {
+    "telemetry": true,
+    "telemetryDrivers": [
+     "ANT",
+     "LEC",
+     "VER",
+     "HAM",
+     "NOR",
+     "HAD",
+     "PIA",
+     "RUS",
+     "LAW",
+     "GAS",
+     "HUL",
+     "LIN",
+     "BOR",
+     "OCO",
+     "STR",
+     "ALO",
+     "ALB",
+     "SAI",
+     "PER",
+     "BOT",
+     "COL",
+     "BEA"
+    ],
+    "radio": true,
+    "weather": true,
+    "intervals": true
+   },
+   "featured": true,
+   "story": "LEC passes HAD for P3; HAM passes HAD for P4"
   }
  ]
 }
