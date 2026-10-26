@@ -43,7 +43,10 @@ export async function loadJson<T>(path: string): Promise<{ data: T | null; statu
     // track.json is tiny too (~5 KB) and the pipeline rewrites outlines in
     // place (rebuild_outlines.py) — a cached whole-race-trace scribble once
     // survived a fix behind force-cache, so it always revalidates as well.
-    const fresh = path === "index.json" || path.endsWith("/track.json");
+    // meta.json carries coverage.telemetryDrivers; rebuilding a race can add
+    // telemetry files, so a stale copy would hide drivers that now exist.
+    const fresh =
+      path === "index.json" || path.endsWith("/track.json") || path.endsWith("/meta.json");
     const init = fresh ? { cache: "no-store" as const } : { cache: "force-cache" as const };
     const res = await fetch(`${base}/data/${path}`, init);
     return parse<T>(res);

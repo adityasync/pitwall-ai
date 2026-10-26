@@ -5,6 +5,7 @@ import { useMemo } from "react";
 export type TraceLap = {
   code: string;
   colour: string;
+  dash?: string;
   dist: number[];
   speed: number[];
   throttle?: number[];
@@ -39,6 +40,7 @@ export function TraceChart({
     const paths = laps.map((l) => ({
       code: l.code,
       colour: l.colour,
+      dash: l.dash,
       d: l.dist.map((d, i) => `${i === 0 ? "M" : "L"}${X(d).toFixed(1)},${Y(l.speed[i]).toFixed(1)}`).join(" "),
     }));
     return { maxD, maxS, paths };
@@ -85,7 +87,7 @@ export function TraceChart({
         </text>
       ))}
       {paths.map((p) => (
-        <path key={p.code} d={p.d} fill="none" stroke={p.colour} strokeWidth={2} />
+        <path key={p.code} d={p.d} fill="none" stroke={p.colour} strokeWidth={2} strokeDasharray={p.dash} />
       ))}
       {cursor != null && (
         <line x1={xOf(cursor)} x2={xOf(cursor)} y1={PADT} y2={H - PADB} stroke="var(--accent)" strokeWidth={1.5} />

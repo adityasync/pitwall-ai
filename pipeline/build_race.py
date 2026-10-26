@@ -1,7 +1,7 @@
 """PITWALL.AI data pipeline — one race end to end (docs/04 + 05).
 
 Usage:
-    python pipeline/build_race.py 2025 18 [--drivers NOR,VER,PIA] [--telemetry-drivers 3]
+    python pipeline/build_race.py 2025 18 [--drivers NOR,VER,PIA] [--telemetry-drivers 3|all]
 
 Resolves (year, round) -> OpenF1 session, fetches with retries + throttle,
 caches raw in pipeline/cache/<race-id>/, writes public/data/<race-id>/*.json
@@ -141,7 +141,8 @@ def main() -> int:
     ap.add_argument("year", type=int)
     ap.add_argument("round", type=int)
     ap.add_argument("--drivers", default="")
-    ap.add_argument("--telemetry-drivers", type=int, default=3)
+    ap.add_argument("--telemetry-drivers", default="3",
+                    help="number of drivers to keep, or 'all' for the full field")
     args = ap.parse_args()
 
     year, rnd = args.year, args.round
@@ -424,7 +425,9 @@ def main() -> int:
     if args.drivers:
         tele_codes = [c.strip().upper() for c in args.drivers.split(",") if c.strip()]
     else:
-        tele_codes = [d["code"] for d in drivers[: args.telemetry_drivers]]
+        want = str(args.telemetry_drivers).strip().lower()
+        n = len(drivers) if want == "all" else max(0, int(want))
+        tele_codes = [d["code"] for d in drivers[:n]]
     print(f"[pitwall] telemetry drivers: {tele_codes}")
     num_of = {d["code"]: d["number"] for d in drivers}
 

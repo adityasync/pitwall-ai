@@ -65,6 +65,7 @@ Use compact arrays (not an object per sample) to keep the file small.
 Per lap, resampled every 5–10 m of lap distance so any two laps overlay.
 `{ lap: { "41": { dist: [..], speed: [..], throttle: [..], brake: [..], gear: [..], drs: [..], time: [..] } } }`
 Include only: fastest 3 laps, every 5th lap, and laps around each moment. Keep each driver under about 1.5 MB gzipped.
+Build with `--telemetry-drivers all` to write the whole field (2026-19-singapore ships 22 drivers). `coverage.telemetryDrivers` must list exactly the files that exist so the UI never probes missing ones.
 
 ## weather.json / race_control.json / radio.json
 `weather: { t: [..], air: [..], track: [..], rain: [..], wind: [..] }`
