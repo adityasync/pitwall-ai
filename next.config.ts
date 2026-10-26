@@ -3,6 +3,10 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
+  experimental: {
+    // Keep future agent-driven upgrades scoped to security patches.
+    agentUpgrade: "security",
+  },
   turbopack: {
     rules: {
       "*.css": {
