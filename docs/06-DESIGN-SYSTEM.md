@@ -35,7 +35,7 @@ Tyres: Soft `#DA291C`, Medium `#FFF000`, Hard `#FFFFFF`, Inter `#39B54A`, Wet bl
 Load via Google Fonts or `next/font`.
 
 ## Components to build (in `/components`)
-Button (primary, secondary, quiet), ModeToggle (EASY/PRO), LangToggle (EN/HINGLISH), Chip, TextField, AiCard (headline, 2 sentences, Hinglish line, evidence chips), EvidenceStrip, TrustBadge (MEASURED `#39B54A`, DERIVED `#64C4FF`, ESTIMATE accent), TimingRow (position, team bar, code, gap, trend arrow, tyre circle), GapBar, TyreBars, TrackMap, TraceChart, PlaybackBar (with moment markers), CommandPalette, StateCard (six variants: no live, loading, live off, no radio, thinking, error), TopBar with "REPLAY · LAP n" badge.
+Button (primary, secondary, quiet), LangToggle (EN/HINGLISH), Chip, TextField, AiCard (headline, 2 sentences, Hinglish line, evidence chips), EvidenceStrip, TrustBadge (MEASURED `#39B54A`, DERIVED `#64C4FF`, ESTIMATE accent), TimingRow (position, team bar, code, gap, trend arrow, tyre circle), GapBar, TyreBars, TrackMap, TraceChart, PlaybackBar (with moment markers), CommandPalette, StateCard (six variants: no live, loading, live off, no radio, thinking, error), TopBar with "REPLAY · LAP n" badge.
 
 ## Layout rules
 - Desktop canvas width 1440; content max-width 1200–1360, centred. Pro workstation uses a multi-panel grid.

@@ -6,33 +6,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useUiStore } from "@/stores/uiStore";
 import { useReplayStore } from "@/stores/replayStore";
-/** EASY/PRO toggle — changes presentation, not data (AGENTS.md). */
-export function ModeToggle() {
-  const { mode, set } = useUiStore();
-  return (
-    <div
-      role="group"
-      aria-label="Mode"
-      className="flex shrink-0 items-center rounded-full border border-white/10 bg-white/[0.04] p-1 backdrop-blur-md"
-    >
-      {(["easy", "pro"] as const).map((m) => (
-        <button
-          key={m}
-          onClick={() => set({ mode: m })}
-          aria-pressed={mode === m}
-          className={`touch rounded-full px-4 text-[12px] font-bold tracking-[0.14em] uppercase transition-all duration-300 ${
-            mode === m
-              ? "bg-white text-black shadow-[0_2px_14px_rgba(255,255,255,0.3)]"
-              : "text-[var(--muted)] hover:text-[var(--text)]"
-          }`}
-        >
-          {m}
-        </button>
-      ))}
-    </div>
-  );
-}
-
 /** EN/Hinglish toggle — same layout both languages (06-DESIGN-SYSTEM.md rule 6). */
 export function LangToggle() {
   const { lang, set } = useUiStore();
@@ -164,7 +137,6 @@ export function TopBar() {
             </svg>
           </button>
           <span className="hidden md:inline-flex"><ReplayBadge /></span>
-          <ModeToggle />
           <span className="hidden sm:inline-flex"><LangToggle /></span>
           <MobileMenu isActive={isActive} />
         </div>
@@ -311,7 +283,6 @@ function MobileMenu({ isActive }: { isActive: (h: string) => boolean }) {
               </div>
             ))}
             <div className="mt-6 flex flex-wrap gap-2">
-              <ModeToggle />
               <LangToggle />
             </div>
           </div>

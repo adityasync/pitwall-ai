@@ -257,7 +257,7 @@ Every sub-page follows the identical pattern (`page.tsx` = sync shell + `generat
 | Component | Notes |
 |---|---|
 | `TrackMap.tsx` (530) | the crown jewel, v6: outline (2 px core + 8 px halo, `vector-effect=non-scaling-stroke` — constant weight per track at any zoom), S/F tick, corner pins, braking zones (`showZones`), driver dots, **trails per driver (gap-split polylines)**, mover pulses (3 s `moversAt` window: motion + colour + ▲▼ text — never colour-only), zoom/follow, `minimal` hero mode (loop + S/F + cars only), corner selection callbacks for Corners page |
-| `TopBar.tsx` | glass bar: ModeToggle (Easy/Pro), LangToggle (EN/Hinglish), ReplayBadge, 4 primary links + "More" overflow + mobile groups sheet |
+| `TopBar.tsx` | glass bar: LangToggle (EN/Hinglish), ReplayBadge, 4 primary links + "More" overflow + mobile groups sheet |
 | `AiCard.tsx` | headline + text + `TrustBadge` + `EvidenceStrip` (label/value/trust triples); lang-aware |
 | `PlaybackBar.tsx` | play/pause, 1/2/4/8 speeds, time + lap readouts, **moment markers (high-confidence only)** — medium-confidence detections don't claim screen space |
 | `StateCard.tsx` | the 6 states (loading / thinking / error / empty / no-radio + action) — every page reuses it |

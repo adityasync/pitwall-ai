@@ -10,7 +10,7 @@ Pipeline before UI. The UI is only as good as `moments.json` and `stats.json`.
 - [ ] Pipeline for ONE race end to end: `meta, drivers, laps, stints, pits, positions, intervals, track, telemetry` for 2–3 drivers.
 - [ ] `detect_moments.py` (overtakes, pits, gap changes, flags, fastest lap) and `compute_stats.py`.
 - [ ] `lib/data.ts`, replay clock and stores. A debug page proving the clock drives a list.
-- [ ] Shell: TopBar, mode toggle, language toggle, replay badge.
+- [ ] Shell: TopBar, language toggle, replay badge.
 Exit: scrub a timeline and see positions change from real data.
 
 ### Day 2 (Mon 12 Oct) — hero flow (P0)

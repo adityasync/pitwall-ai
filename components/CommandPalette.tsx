@@ -55,10 +55,6 @@ function PaletteInner() {
       { label: "Standings", hint: "people", race: false, run: () => router.push("/standings") },
       { label: "Methods and data limits", hint: "more", race: false, run: () => router.push("/methods") },
       { label: "Pick a race", hint: "watch", race: false, run: () => router.push("/races") },
-      { label: "Toggle Easy/Pro mode", hint: "command", race: false, run: () => {
-        const s = useUiStore.getState();
-        s.set({ mode: s.mode === "easy" ? "pro" : "easy" });
-      } },
       { label: "Toggle EN/Hinglish", hint: "command", race: false, run: () => {
         const s = useUiStore.getState();
         s.set({ lang: s.lang === "en" ? "hi" : "en" });

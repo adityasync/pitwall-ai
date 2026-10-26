@@ -48,7 +48,7 @@ Mode: EASY, PRO or BOTH. All pages read the same race files in `public/data/`.
 | `/methods` | Data and methods | Methods.dc.html | P1 | static, mirrors `04-DATA-SOURCES.md` |
 
 ## Shell (every page)
-App shell and command bar (Shell.dc.html): grouped navigation WATCH / ANALYSE / PEOPLE / MORE, `Ctrl-K` command palette, shortcuts bar, Easy/Pro switch top right, EN/Hinglish switch, replay badge ("REPLAY · LAP 42").
+App shell and command bar (Shell.dc.html): grouped navigation WATCH / ANALYSE / PEOPLE / MORE, `Ctrl-K` command palette, shortcuts bar, EN/Hinglish switch, replay badge ("REPLAY · LAP 42").
 Older canvas screens have a flat tab strip; replace it with the shell navigation.
 
 ## Shared behaviour
